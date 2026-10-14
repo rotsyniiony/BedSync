@@ -1,0 +1,18 @@
+Format de date unique : 
+AAAA-MM-JJ HH:MM:SS
+Journée-lit = durée en heures ÷ 24
+États des lits sans accents dans le code : 
+Statuts des séjours : 
+DISPONIBLE , 
+EN_COURS , 
+TERMINE
+Types de mouvement : 
+ADMISSION , 
+OCCUPE , 
+TRANSFERT , 
+SORTIE
+Nom normalisé d'un service : 
+INDISPONIBLE
+strip() + minuscules + suppression des accents
+Règle de dépendance MVC : la vue appelle le contrôleur, le contrôleur appelle le modèle,
+le modèle n'importe jamais PyQt, la vue n'importe jamais le modèl

@@ -1,0 +1,1 @@
+-Génération de "checklist_projet.pdf" qui contient le plan d'action (étape par étape) de la réalisation du projet
