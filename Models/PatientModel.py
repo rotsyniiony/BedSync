@@ -4,22 +4,22 @@ class PatientModel():
     def __init__(self, id, code, date):
         self.id_patient = id
         self.code_patient = code
-        self.date_fiche = code
+        self.date_fiche = date
 
     def get_id_patient(self):
-        return self.id_patient
+        return self._id_patient
     def set_id_patient(self, id):
-        self.id_patient = id
+        self._id_patient = id
 
     def get_code_patient(self):
-        return self.code_patient
+        return self._code_patient
     def set_code_patient(self, code):
-        self.code_patient = code
+        self._code_patient = code
 
     def get_date_fiche(self):
-        return self.date_fiche
+        return self._date_fiche
     def set_date_fiche(self, date):
-        self.date_fiche = date
+        self._date_fiche = date
 
     id_patient = property(get_id_patient, set_id_patient)
     code_patient = property(get_code_patient, set_code_patient)
@@ -39,3 +39,18 @@ class PatientModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    def read_all(self):
+        liste_patients = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM patient"
+            curseur.execute(req)
+            liste_patients = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des patients: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste_patients

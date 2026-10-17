@@ -11,34 +11,34 @@ class ServiceModel():
 
 
     def get_id_service(self):
-        return self.id_service
+        return self._id_service
     def set_id_service(self, id):
-        self.id_service = id
+        self._id_service = id
 
     def get_nom_service(self):
-        return self.nom_service
+        return self._nom_service
     def set_nom_service(self, nom):
-        self.nom_service = nom
+        self._nom_service = nom
 
     def get_categorie_service(self):
-        return self.categorie_service
+        return self._categorie_service
     def set_categorie_service(self, cat):
-        self.categorie_service = cat
+        self._categorie_service = cat
 
     def get_seuil_occupation(self):
-        return self.seuil_occupation
+        return self._seuil_occupation
     def set_seuil_occupation(self, seuil):
-        self.seuil_occupation = seuil
+        self._seuil_occupation = seuil
 
     def get_statut_service(self):
-        return self.statut_service
+        return self._statut_service
     def set_statut_service(self, statut):
-        self.statut_service = statut
+        self._statut_service = statut
 
     def get_desc_service(self):
-        return self.desc_service
+        return self._desc_service
     def set_desc_service(self, desc):
-        self.desc_service = desc
+        self._desc_service = desc
 
     id_service = property(get_id_service, set_id_service)
     nom_service = property(get_nom_service, set_nom_service)

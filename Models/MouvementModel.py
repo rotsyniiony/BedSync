@@ -9,29 +9,29 @@ class MouvementModel():
         self.date_mouvement = date
 
     def get_id_mouvement(self):
-        return self.id_mouvement
+        return self._id_mouvement
     def set_id_mouvement(self, id):
-        self.id_mouvement = id
+        self._id_mouvement = id
 
     def get_id_sejour(self):
-        return self.id_sejour
+        return self._id_sejour
     def set_id_sejour(self, sejour):
-        self.id_sejour = sejour
+        self._id_sejour = sejour
 
     def get_id_lit(self):
-        return self.id_lit
+        return self._id_lit
     def set_id_lit(self, lit):
-        self.lit  = lit
+        self._lit  = lit
 
     def get_type_mouvement(self):
-        return self.type_mouvement
+        return self._type_mouvement
     def set_type_mouvement(self, type):
-        self.type_mouvement = type
+        self._type_mouvement = type
 
     def get_date_mouvement(self):
-        return self.date_mouvement
+        return self._date_mouvement
     def set_date_mouvement(self, date):
-        self.date_mouvement = date
+        self._date_mouvement = date
 
 
     id_mouvement = property(get_id_mouvement, set_id_mouvement)

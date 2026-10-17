@@ -12,34 +12,34 @@ class SejourModel():
     
 
     def get_id_sejour(self):
-        return self.id_sejour
+        return self._id_sejour
     def set_id_sejour(self, sejour):
-        self.id_sejour = sejour
+        self._id_sejour = sejour
 
     def get_id_patient(self):
-        return self.id_patient
+        return self._id_patient
     def set_id_patient(self, patient):
-        self.id_patient = patient
+        self._id_patient = patient
 
     def get_id_service(self):
-        return self.id_service
+        return self._id_service
     def set_id_service(self, serv):
-        self.id_service = serv
+        self._id_service = serv
 
     def get_id_lit(self):
-        return self.id_lit
+        return self._id_lit
     def set_id_lit(self, lit):
-        self.id_lit = lit
+        self._id_lit = lit
 
     def get_admission(self):
-        return self.date_admission
+        return self._date_admission
     def set_admission(self, adm):
-        self.date_admission = adm
+        self._date_admission = adm
     
     def get_sortie(self):
-        return self.date_sortie
+        return self._date_sortie
     def set_sortie(self, sortie):
-        self.date_sortie = sortie
+        self._date_sortie = sortie
 
     id_sejour = property(get_id_sejour, set_id_sejour)
     id_patient = property(get_id_patient, set_id_patient)
