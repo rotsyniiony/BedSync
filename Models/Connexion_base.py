@@ -11,8 +11,9 @@ class Connexion_base:
                     password="",
                     database="BedSync"
                 )
-            except my.Error:
-                print("Erreur de connexion à la base de données")
+                return Connexion_base.ma_connexion
+            except my.Error as m:
+                print(f"Erreur de connexion à la base de données: {m}")
         else:
             return Connexion_base.ma_connexion
     get_connexion = classmethod(get_connexion)

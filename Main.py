@@ -1,1 +1,7 @@
-from Models.Connexion_base import *
+from Models.LitModel import *
+from Models.PatientModel import *
+
+un_patient = PatientModel(0, 2, '2026-10-17')
+un_patient.create()
+
+Connexion_base.get_connexion()
