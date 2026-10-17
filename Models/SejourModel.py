@@ -9,6 +9,8 @@ class SejourModel():
         self.date_admission = adm
         self.date_sortie = sortie
 
+    
+
     def get_id_sejour(self):
         return self.id_sejour
     def set_id_sejour(self, sejour):
@@ -38,6 +40,13 @@ class SejourModel():
         return self.date_sortie
     def set_sortie(self, sortie):
         self.date_sortie = sortie
+
+    id_sejour = property(get_id_sejour, set_id_sejour)
+    id_patient = property(get_id_patient, set_id_patient)
+    id_service = property(get_id_service, set_id_service)
+    id_lit = property(get_id_lit, set_id_lit)
+    date_admission = property(get_admission, set_admission)
+    date_sortie = property(get_sortie, set_sortie)
 
 
     def create(self):

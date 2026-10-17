@@ -9,6 +9,7 @@ class ServiceModel():
         self.seuil_occupation = seui
         self.statut_service = satut
 
+
     def get_id_service(self):
         return self.id_service
     def set_id_service(self, id):
@@ -33,6 +34,19 @@ class ServiceModel():
         return self.statut_service
     def set_statut_service(self, statut):
         self.statut_service = statut
+
+    def get_desc_service(self):
+        return self.desc_service
+    def set_desc_service(self, desc):
+        self.desc_service = desc
+
+    id_service = property(get_id_service, set_id_service)
+    nom_service = property(get_nom_service, set_nom_service)
+    categorie_service = property(get_categorie_service, set_categorie_service)
+    desc_service = property(get_desc_service, set_desc_service)
+    seuil_occupation = property(get_seuil_occupation, set_seuil_occupation)
+    statut_service = property(get_statut_service, set_statut_service)
+
 
     def create(self):
         try:

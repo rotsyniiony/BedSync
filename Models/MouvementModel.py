@@ -1,0 +1,57 @@
+from Models.Connexion_base import *
+
+class MouvementModel():
+    def __init__(self, id, sejour, lit, type, date):
+        self.id_mouvement = id
+        self.id_sejour = sejour
+        self.id_lit = lit
+        self.type_mouvement = type
+        self.date_mouvement = date
+
+    def get_id_mouvement(self):
+        return self.id_mouvement
+    def set_id_mouvement(self, id):
+        self.id_mouvement = id
+
+    def get_id_sejour(self):
+        return self.id_sejour
+    def set_id_sejour(self, sejour):
+        self.id_sejour = sejour
+
+    def get_id_lit(self):
+        return self.id_lit
+    def set_id_lit(self, lit):
+        self.lit  = lit
+
+    def get_type_mouvement(self):
+        return self.type_mouvement
+    def set_type_mouvement(self, type):
+        self.type_mouvement = type
+
+    def get_date_mouvement(self):
+        return self.date_mouvement
+    def set_date_mouvement(self, date):
+        self.date_mouvement = date
+
+
+    id_mouvement = property(get_id_mouvement, set_id_mouvement)
+    id_sejour = property(get_id_sejour, set_id_sejour)
+    id_lit = property(get_id_lit, set_id_lit)
+    type_mouvement = property(get_type_mouvement, set_type_mouvement)
+    date_mouvement = property(get_date_mouvement, set_date_mouvement)
+
+
+    def create(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s, %s, %s, %s, %s)"
+            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement)
+            curseur.execute(chaine_req, valeurs)
+            ma_connexion.commit()
+        except:
+            print("Erreur lors de l'ajout de sejour")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        

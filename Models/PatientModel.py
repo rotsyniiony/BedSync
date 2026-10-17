@@ -20,6 +20,11 @@ class PatientModel():
         return self.date_fiche
     def set_date_fiche(self, date):
         self.date_fiche = date
+
+    id_patient = property(get_id_patient, set_id_patient)
+    code_patient = property(get_code_patient, set_code_patient)
+    date_fiche = property(get_date_fiche, set_date_fiche)
+    
     
     def create(self):
         try:
