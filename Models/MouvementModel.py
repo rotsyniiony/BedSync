@@ -54,4 +54,47 @@ class MouvementModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    def read_all(self):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM Mouvement"
+            curseur.execute(req)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des mouvements: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    def update(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE Mouvement SET id_sejour = %s, id_lit = %s, date_mouvement = %s WHERE id_mouvement = %s"
+            valeurs = (self.id_sejour, self.id_lit, self.date_mouvement, self.id_mouvement)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    def delete(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "DELETE FROM patient WHERE id_mouvement = %s"
+            valeur = (self.id_service,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de suppression: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
         

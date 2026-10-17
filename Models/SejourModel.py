@@ -62,3 +62,46 @@ class SejourModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    def read_all(self):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM sejour"
+            curseur.execute(req)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    def update(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE sejour SET id_patient = %s,  id_service = %s, id_lit = %s, date_admission = %s, date_sortie = %s WHERE id_sejour = %s"
+            valeurs = (self.id_patient, self.id_service, self.id_lit, self.date_admission, self.date_sortie, self.id_sejour)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    def delete(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "DELETE FROM sejour WHERE id_sejour = %s"
+            valeur = (self.id_sejour,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de suppression: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    

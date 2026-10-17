@@ -55,4 +55,45 @@ class LitModel():
             print("Erreur lors de l'ajout de lit")
         finally:
             curseur.close()
+    def read_all(self):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM lit"
+            curseur.execute(req)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    def update(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE lit SET code_lit = %s, id_service = %s, etat_lit = %s, desc_lit = %s WHERE id_lit = %s"
+            valeurs = (self.code_lit, self.id_service, self.etat_lit, self.desc_lit, self.id_lit)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    def delete(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "DELETE FROM lit WHERE id_lit = %s"
+            valeur = (self.id_lit,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de suppression: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
 

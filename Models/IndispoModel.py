@@ -52,3 +52,44 @@ class IndispoModel():
         finally:
             curseur.close()
             ma_connexion.close()
+    def read_all(self):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM indispo"
+            curseur.execute(req)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des indispo: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    def update(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE indispo SET id_lit = %s, date_debut = %s, date_fin = %s WHERE id_indispo = %s"
+            valeurs = (self.id_lit, self.date_debut, self.date_fin, self.id_indispo)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    def delete(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "DELETE FROM indispo WHERE id_indispo = %s"
+            valeur = (self.id_indispo,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de suppression: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()

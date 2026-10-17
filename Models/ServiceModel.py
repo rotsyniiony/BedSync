@@ -61,3 +61,45 @@ class ServiceModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    def read_all(self):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM services"
+            curseur.execute(req)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des services: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    def update(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE services SET nom_service = %s, categorie_service = %s, desc_service = %s, seuil_occupation = %s, statut_service = %s WHERE id_service = %s"
+            valeurs = (self.nom_service, self.categorie_service, self.dec_service, self,self.seuil_occupation, self.statut, self.id_service)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    def delete(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "DELETE FROM patient WHERE id_service = %s"
+            valeur = (self.id_service,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de suppression: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
