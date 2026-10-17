@@ -54,3 +54,31 @@ class PatientModel():
             curseur.close()
             ma_connexion.close()
         return liste_patients
+
+    def update(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE patient SET code_patient = %s, date_fiche = %s WHERE id_patient = %s"
+            valeurs = (self.code_patient, self.date_fiche, self.id_patient)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+    def delete(self):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "DELETE FROM patient WHERE id_patient = %s"
+            valeur = (self.id_patient,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de suppression: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
