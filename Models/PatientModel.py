@@ -28,7 +28,7 @@ class PatientModel():
     
     def create(self):
         try:
-            ma_connexion = Connexion_base.get_connexion()
+            ma_connexion = Connexion_base.get_connexion()            
             curseur = ma_connexion.cursor()
             chaine_req = "INSERT INTO Patient VALUES(NULL, %s, %s)"
             valeurs = (self.code_patient, self.date_fiche)
@@ -36,6 +36,7 @@ class PatientModel():
             ma_connexion.commit()
         except Exception as e:
             print(f"Erreur lors de l'ajout de patient: {e}")
+
         finally:
             curseur.close()
             ma_connexion.close()
@@ -54,6 +55,25 @@ class PatientModel():
             curseur.close()
             ma_connexion.close()
         return liste_patients
+
+
+    def read_codes(self):
+        liste_patients = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT code_patient FROM patient"
+            curseur.execute(req)
+            liste_patients = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des patients: {e}")
+        finally:
+            if 'curseur' in locals() and curseur:
+                curseur.close()
+            if 'ma_connexion' in locals() and ma_connexion:
+                ma_connexion.close()
+        return liste_patients
+
 
     def update(self):
         try:
@@ -81,4 +101,6 @@ class PatientModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    
 

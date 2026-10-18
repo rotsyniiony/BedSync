@@ -1,5 +1,8 @@
 from Models.LitModel import *
 from Models.PatientModel import *
+from Controllers.LitController import *
+from Controllers.PatientController import *
 
-un_patient = PatientModel(3, 400, '2026-10-17') 
-un_patient.delete()
+PatientController.ajout(2, '2026-10-18')
+
+
