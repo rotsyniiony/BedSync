@@ -1,0 +1,55 @@
+CREATE TABLE services(
+	id_service INT AUTO_INCREMENT,
+    nom_service VARCHAR(200) UNIQUE NOT NULL,
+    categorie_service VARCHAR(200) NOT NULL,
+    desc_service LONGTEXT NOT NULL,
+    seuil_occupation INT NOT NULL,
+    statut VARCHAR(200) NOT NULL,
+    PRIMARY KEY id_service
+)
+
+CREATE TABLE patient(
+    id_patient INT AUTO_INCREMENT,
+    date_fiche DATE NOT NULL,
+    PRIMARY KEY id_patient
+)
+CREATE TABLE lit(
+	id_lit INT AUTO_INCREMENT,
+	id_service INT NOT NULL,
+	etat_lit VARCHAR(200) NOT NULL,
+	desc_lit LONGTEXT(200),
+	PRIMARY KEY (id_lit),
+	CONSTRAINT fk_lit_service FOREIGN KEY (id_service) REFERENCES service(id_service)
+)
+CREATE TABLE indispo(
+	id_indispo INT AUTO_INCREMENT,
+	id_lit INT NOT NULL,
+	date_debut DATE NOT NULL,
+	date_fin DATE,
+	motif LONGTEXT NOT NULL,
+	PRIMARY KEY (id_indispo),
+	CONSTRAINT fk_indispo_lit FOREIGN KEY (id_lit) REFERENCES lit(id_lit)
+)
+CREATE TABLE sejour(
+	id_sejour INT AUTO_INCREMENT,
+	id_patient INT NOT NULL,
+	id_service INT NOT NULL,
+	id_lit INT NOT NULL,
+	date_admission DATE NOT NULL,
+	date_sortie DATE,
+	PRIMARY KEY (id_sejour)
+	CONSTRAINT fk_sejour_patient FOREIGN KEY (id_patient) REFERENCES patient(id_pat)
+	CONSTRAINT fk_sejour_service FOREIGN KEY (id_service) REFERENCES service(id_service)
+	CONSTRAINT fk_sejour_lit FOREIGN KEY (id_lit) REFERENCES lit(id_lit)
+)
+CREATE TABLE mouvement(
+	id_mouvement INT AUTO_INCREMENT,
+	id_sejour INT NOT NULL,
+	id_lit INT NOT NULL,
+	type_mouvement VARCHAR(200) NOT NULL,
+	date_mouvement DATE NOT NULL,
+	PRIMARY KEY (id_mouvement),
+	CONSTRAINT fk_mouvement_service FOREIGN KEY (id_service) REFERENCES service(id_service)
+	CONSTRAINT fk_mouvement_lit FOREIGN KEY (id_lit) REFERENCES lit(id_lit)
+	
+)
