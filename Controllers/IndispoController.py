@@ -3,14 +3,14 @@ from datetime import *
 
 class IndispoController():
     
-    def ajout(cls, id_lit, date_debut, date_fin, motif):
+    def create(cls, id_lit, date_debut, date_fin, motif):
         if not id_lit or not motif:
             raise ValueError("Le nom du lit est le motif concernés sont obligatoires")
 
         
         patient = IndispoModel(0, id_lit, date_debut, date_fin, motif)        
         patient.create()
-    ajout = classmethod(ajout)
+    create = classmethod(create)
 
     def read(cls):
         patient = IndispoModel(0, 0, "")

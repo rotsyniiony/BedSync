@@ -3,14 +3,14 @@ from datetime import *
 
 class SejourController():
     
-    def ajout(cls, id_patient,id_sevice,id_lit, date_admission, date_sortie):
+    def create(cls, id_patient,id_sevice,id_lit, date_admission, date_sortie):
         if not id_patient or not id_lit:
             raise ValueError("Le code de service est le lit concerné sont obligatoires")
 
         
         patient = SejourModel(0,id_patient,id_sevice,id_lit, date_admission, date_sortie)        
         patient.create()
-    ajout = classmethod(ajout)
+    create = classmethod(create)
 
     def read(cls):
         patient = SejourModel(0, 0, "")

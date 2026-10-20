@@ -3,14 +3,14 @@ from datetime import *
 
 class ServiceController():
     
-    def ajout(cls, nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
+    def create(cls, nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
         if not nom_service or not categorie_service:
             raise ValueError("Le nom de service est la catégorie concernés sont obligatoires")
 
         
         patient = ServiceModel(0, nom_service, categorie_service, desc_service, seuil_occupation, statut_service)        
         patient.create()
-    ajout = classmethod(ajout)
+    create = classmethod(create)
 
     def read(cls):
         patient = ServiceModel(0, 0, "")

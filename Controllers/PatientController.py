@@ -3,14 +3,14 @@ from datetime import *
 
 class PatientController():
     
-    def ajout(cls, code_patient, date_fiche):
+    def create(cls, code_patient, date_fiche):
         if not code_patient or not date_fiche:
             raise ValueError("Le code de patient est la date de fiche concernée sont obligatoires")
 
         
         patient = PatientModel(0, code_patient, date_fiche)        
         patient.create()
-    ajout = classmethod(ajout)
+    create = classmethod(create)
 
     def read(cls):
         patient = PatientModel(0, 0, "")

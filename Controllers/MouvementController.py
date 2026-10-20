@@ -3,14 +3,14 @@ from datetime import *
 
 class MouvementController():
     
-    def ajout(cls, id_sejour, id_lit, type_mouvement, date_mouvement):
+    def create(cls, id_sejour, id_lit, type_mouvement, date_mouvement):
         if not id_sejour or not type_mouvement:
             raise ValueError("Le nom du sejour est le type de mouvement concernés sont obligatoires")
 
         
         patient = MouvementModel(0, id_sejour, id_lit, type_mouvement, date_mouvement)        
         patient.create()
-    ajout = classmethod(ajout)
+    create = classmethod(create)
 
     def read(cls):
         patient = MouvementModel(0, 0, "")

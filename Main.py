@@ -3,6 +3,6 @@ from Models.PatientModel import *
 from Controllers.LitController import *
 from Controllers.PatientController import *
 
-PatientController.ajout(2, '2026-10-18')
+LitController.ajout()
 
 
