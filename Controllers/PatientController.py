@@ -22,8 +22,8 @@ class PatientController():
             raise ValueError("Remplir tous les champs")
         if not isinstance(date_fiche, datetime):
             raise ValueError("Donnez une date valide AAAA-MM-JJ...")
-        patient = PatientModel(0, 0, "")
-        patient.update(id_patient, code_patient, date_fiche)
+        patient = PatientModel(id_patient, code_patient, date_fiche)
+        patient.update()
     update = classmethod(update)
 
     def delete(cls, id_patient):

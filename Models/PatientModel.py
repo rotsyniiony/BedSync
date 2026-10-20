@@ -78,6 +78,8 @@ class PatientModel():
     def update(self):
         try:
             ma_connexion = Connexion_base.get_connexion()
+            if ma_connexion is None:
+                raise Exception("La connexion à la base de données a échoué (la méthode renvoie None).")
             curseur = ma_connexion.cursor()
             req = "UPDATE patient SET code_patient = %s, date_fiche = %s WHERE id_patient = %s"
             valeurs = (self.code_patient, self.date_fiche, self.id_patient)
@@ -86,8 +88,10 @@ class PatientModel():
         except Exception as e:
             print(f"Erreur de modification: {e}")
         finally:
-            curseur.close()
-            ma_connexion.close()
+            if 'curseur' in locals() and curseur:
+                curseur.close()
+            if 'ma_connexion' in locals() and       ma_connexion:
+                ma_connexion.close()
     def delete(self):
         try:
             ma_connexion = Connexion_base.get_connexion()
