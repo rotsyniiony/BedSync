@@ -28,11 +28,12 @@ from Controllers.IndispoController import *
 #    print(x)
 
 #ServiceController.delete(1)
+#ServiceController.desactiver(2)
 
 
 #LIT
 
-#LitController.create(code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
+LitController.create(code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
 #LitController.update(id_lit=1, code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="INDISPONIBLE")
 #l = LitController.read()
 #for x in (l):

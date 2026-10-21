@@ -103,3 +103,36 @@ class ServiceModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    @classmethod
+    def get_service(cls, id_service):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT FROM services WHERE id_service = %s"
+            valeur = (id_service,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+            liste = curseur.fetch()
+        except Exception as e:
+            print(f"Erreur de lecture pour cet id: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def desactiver(cls, id_service):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE services SET statut = %s WHERE id_service = %s"
+            valeurs = ("INACTIF", id_service)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de désactivation: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()

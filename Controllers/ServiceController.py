@@ -4,10 +4,25 @@ from datetime import *
 class ServiceController():
     
     def create(cls, nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
-        if not nom_service or not categorie_service:
-            raise ValueError("Le nom de service est la catégorie concernés sont obligatoires")
+        if not nom_service or not categorie_service or not desc_service or not seuil_occupation or not statut_service:
+            raise ValueError("Le nom, la catégorie, la description, le seuil, le statut concernés sont obligatoires")
 
-        
+        if(nom_service == ""):
+            raise ValueError("Donnez à ce service un nom")
+
+        if(seuil_occupation > 100 or seuil_occupation < 0):
+            raise ValueError("Seuil d'occupation doit être entre 0 et 100")
+
+        if(statut_service != "ACTIF" or statut_service != "INACTIF"):
+            raise ValueError("le statut doit être soit actif soit inactif")
+
+        if(desc_service == ""):
+            raise ValueError("Donnez une description")
+
+        if(categorie_service == ""):
+            raise ValueError("Mentionner la catégorie")
+
+
         patient = ServiceModel(0, nom_service, categorie_service, desc_service, seuil_occupation, statut_service)        
         patient.create()
     create = classmethod(create)
@@ -21,6 +36,18 @@ class ServiceController():
         if not nom_service or not categorie_service:
             raise ValueError("Remplir tous les champs")
 
+        if(seuil_occupation > 100 or seuil_occupation < 0):
+            raise ValueError("Seuil d'occupation doit être entre 0 et 100")
+
+        if(statut_service != "ACTIF" or statut_service != "INACTIF"):
+            raise ValueError("le statut doit être soit actif soit inactif")
+
+        if(desc_service == ""):
+            raise ValueError("Donnez une description")
+
+        if(categorie_service == ""):
+            raise ValueError("Mentionner la catégorie")
+
         patient = ServiceModel(id_service , nom_service, categorie_service, desc_service, seuil_occupation, statut_service)
         patient.update()
     update = classmethod(update)
@@ -31,6 +58,15 @@ class ServiceController():
         patient = ServiceModel(id_service, "", "", "", 0, "")
         patient.delete()
     delete = classmethod(delete)
+
+    @classmethod
+    def desactiver(cls, id_service):
+        ServiceModel.desactiver(id_service)
+            
+
+
+
+    
         
 
     
