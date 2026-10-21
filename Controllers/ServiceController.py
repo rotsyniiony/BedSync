@@ -21,8 +21,8 @@ class ServiceController():
         if not nom_service or not categorie_service:
             raise ValueError("Remplir tous les champs")
 
-        patient = ServiceModel(0, 0, "")
-        patient.update(id_service , nom_service, categorie_service, desc_service, seuil_occupation, statut_service)
+        patient = ServiceModel(id_service , nom_service, categorie_service, desc_service, seuil_occupation, statut_service)
+        patient.update()
     update = classmethod(update)
 
     def delete(cls, id_service):

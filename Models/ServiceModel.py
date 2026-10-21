@@ -7,7 +7,7 @@ class ServiceModel():
         self.categorie_service = cat
         self.desc_service = des
         self.seuil_occupation = seui
-        self.statut_service = satut
+        self.statut = satut
 
 
     def get_id_service(self):
@@ -53,11 +53,11 @@ class ServiceModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
             chaine_req = "INSERT INTO Services VALUES(NULL, %s, %s, %s, %s, %s)"
-            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation, self.statut)
+            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation, self.statut_service)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
-        except:
-            print("Erreur lors de l'ajout de service")
+        except Exception as e:
+            print(f"Erreur lors de l'ajout de service: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -82,7 +82,7 @@ class ServiceModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
             req = "UPDATE services SET nom_service = %s, categorie_service = %s, desc_service = %s, seuil_occupation = %s, statut_service = %s WHERE id_service = %s"
-            valeurs = (self.nom_service, self.categorie_service, self.dec_service, self,self.seuil_occupation, self.statut, self.id_service)
+            valeurs = (self.nom_service, self.categorie_service, self.desc_service,self.seuil_occupation, self.statut, self.id_service)
             curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:

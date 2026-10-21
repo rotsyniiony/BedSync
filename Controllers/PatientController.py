@@ -29,8 +29,8 @@ class PatientController():
     def delete(cls, id_patient):
         if not id_patient:
             raise ValueError("Entrez l'id du patient")
-        patient = PatientModel(0, 0, "")
-        patient.delete(id_patient)
+        patient = PatientModel(id_patient, 0, "")
+        patient.delete()
     delete = classmethod(delete)
         
 
