@@ -47,12 +47,12 @@ class LitModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Lit VALUES(NULL, %d, %d, %s, %s)"
-            valeurs = (self.id_service, self.code_lit, self.etat_lit, self.desc_lit)
+            chaine_req = "INSERT INTO Lit VALUES(NULL, %s, %s, %s, %s)"
+            valeurs = (self.code_lit,self.id_service, self.etat_lit, self.desc_lit)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
-        except:
-            print("Erreur lors de l'ajout de lit")
+        except Exception as e:
+            print(f"Erreur lors de l'ajout de lit: {e}")
         finally:
             curseur.close()
     def read_all(self):

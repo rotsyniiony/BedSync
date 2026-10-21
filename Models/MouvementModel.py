@@ -1,12 +1,12 @@
 from Models.Connexion_base import *
 
 class MouvementModel():
-    def __init__(self, id, sejour, lit, type, date):
-        self.id_mouvement = id
-        self.id_sejour = sejour
-        self.id_lit = lit
-        self.type_mouvement = type
-        self.date_mouvement = date
+    def __init__(self, id_mouvement, id_sejour, id_lit, type_mouvement, date_mouvement):
+        self.id_mouvement = id_mouvement
+        self.id_sejour = id_sejour
+        self.id_lit = id_lit
+        self.type_mouvement = type_mouvement
+        self.date_mouvement = date_mouvement
 
     def get_id_mouvement(self):
         return self._id_mouvement
@@ -21,7 +21,7 @@ class MouvementModel():
     def get_id_lit(self):
         return self._id_lit
     def set_id_lit(self, lit):
-        self._lit  = lit
+        self._id_lit  = lit
 
     def get_type_mouvement(self):
         return self._type_mouvement
@@ -45,12 +45,13 @@ class MouvementModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s, %s, %s, %s, %s)"
+            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s)"
             valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement)
+            print(f"{self.id_lit}")
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
-        except:
-            print("Erreur lors de l'ajout de sejour")
+        except Exception as e:
+            print(f"Erreur lors de l'ajout de mouvement : {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -87,8 +88,8 @@ class MouvementModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            req = "DELETE FROM patient WHERE id_mouvement = %s"
-            valeur = (self.id_service,)
+            req = "DELETE FROM Mouvement WHERE id_mouvement = %s"
+            valeur = (self.id_mouvement,)
             curseur.execute(req, valeur)
             ma_connexion.commit()
         except Exception as e:

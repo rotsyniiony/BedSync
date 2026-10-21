@@ -8,12 +8,12 @@ class MouvementController():
             raise ValueError("Le nom du sejour est le type de mouvement concernés sont obligatoires")
 
         
-        patient = MouvementModel(0, id_sejour, id_lit, type_mouvement, date_mouvement)        
+        patient = MouvementModel(id_mouvement=0, id_sejour=id_sejour, id_lit=id_lit, type_mouvement=type_mouvement, date_mouvement=date_mouvement)        
         patient.create()
     create = classmethod(create)
 
     def read(cls):
-        patient = MouvementModel(0, 0, "")
+        patient = MouvementModel(0, 0, 0, "", "")
         return patient.read_all()
     read = classmethod(read)
 
@@ -21,15 +21,15 @@ class MouvementController():
         if not id_sejour or not type_mouvement:
             raise ValueError("Remplir tous les champs")
 
-        patient = MouvementModel(0, 0, "")
-        patient.update(id_mouvement , id_sejour, id_lit, type_mouvement, date_mouvement)
+        patient = MouvementModel(id_mouvement , id_sejour, id_lit, type_mouvement, date_mouvement)
+        patient.update()
     update = classmethod(update)
 
     def delete(cls, id_mouvement):
         if not id_mouvement:
             raise ValueError("Entrez l'id du mouvement")
-        patient = MouvementModel(0, 0, "")
-        patient.delete(id_mouvement)
+        patient = MouvementModel(id_mouvement, 0, 0, "","")
+        patient.delete()
     delete = classmethod(delete)
         
 

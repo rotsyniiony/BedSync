@@ -53,7 +53,7 @@ class ServiceModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
             chaine_req = "INSERT INTO Services VALUES(NULL, %s, %s, %s, %s, %s)"
-            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation, self.statut_service)
+            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation, self.statut)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:
@@ -81,7 +81,7 @@ class ServiceModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            req = "UPDATE services SET nom_service = %s, categorie_service = %s, desc_service = %s, seuil_occupation = %s, statut_service = %s WHERE id_service = %s"
+            req = "UPDATE services SET nom_service = %s, categorie_service = %s, desc_service = %s, seuil_occupation = %s, statut = %s WHERE id_service = %s"
             valeurs = (self.nom_service, self.categorie_service, self.desc_service,self.seuil_occupation, self.statut, self.id_service)
             curseur.execute(req, valeurs)
             ma_connexion.commit()
@@ -94,7 +94,7 @@ class ServiceModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            req = "DELETE FROM patient WHERE id_service = %s"
+            req = "DELETE FROM services WHERE id_service = %s"
             valeur = (self.id_service,)
             curseur.execute(req, valeur)
             ma_connexion.commit()

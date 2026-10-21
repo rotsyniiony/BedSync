@@ -1,7 +1,7 @@
 from Models.Connexion_base import *
 
 class SejourModel():
-    def __init__(self, id, patient, service, lit, adm, sortie):
+    def __init__(self, id, patient, service, lit, adm, sortie=None):
         self.id_sejour = id
         self.id_patient = patient
         self.id_service = service
@@ -57,8 +57,8 @@ class SejourModel():
             valeurs = (self.id_patient, self.id_service, self.id_lit, self.date_admission, self.date_sortie)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
-        except:
-            print("Erreur lors de l'ajout de sejour")
+        except Exception as e:
+            print(f"Erreur lors de l'ajout de sejour: {e}")
         finally:
             curseur.close()
             ma_connexion.close()

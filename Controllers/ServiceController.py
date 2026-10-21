@@ -13,7 +13,7 @@ class ServiceController():
     create = classmethod(create)
 
     def read(cls):
-        patient = ServiceModel(0, 0, "")
+        patient = ServiceModel(0, "", "", "", 0, "")
         return patient.read_all()
     read = classmethod(read)
 
@@ -28,8 +28,8 @@ class ServiceController():
     def delete(cls, id_service):
         if not id_service:
             raise ValueError("Entrez l'id du service")
-        patient = ServiceModel(0, 0, "")
-        patient.delete(id_service)
+        patient = ServiceModel(id_service, "", "", "", 0, "")
+        patient.delete()
     delete = classmethod(delete)
         
 

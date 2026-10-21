@@ -13,7 +13,7 @@ class IndispoController():
     create = classmethod(create)
 
     def read(cls):
-        patient = IndispoModel(0, 0, "")
+        patient = IndispoModel(0, 0, "", "", "")
         return patient.read_all()
     read = classmethod(read)
 
@@ -21,15 +21,15 @@ class IndispoController():
         if not id_lit or not motif:
             raise ValueError("Remplir tous les champs")
 
-        patient = IndispoModel(0, 0, "")
-        patient.update(id_indispo, id_lit, date_debut, date_fin, motif)
+        patient = IndispoModel(id_indispo, id_lit, date_debut, date_fin, motif)
+        patient.update()
     update = classmethod(update)
 
     def delete(cls, id_indispo):
         if not id_indispo:
             raise ValueError("Entrez l'id de l'indispo")
-        patient = IndispoModel(0, 0, "")
-        patient.delete(id_indispo)
+        patient = IndispoModel(id_indispo, 0, "", "", "")
+        patient.delete()
     delete = classmethod(delete)
         
 

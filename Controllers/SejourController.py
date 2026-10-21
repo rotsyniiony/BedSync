@@ -3,7 +3,7 @@ from datetime import *
 
 class SejourController():
     
-    def create(cls, id_patient,id_sevice,id_lit, date_admission, date_sortie):
+    def create(cls, id_patient,id_sevice,id_lit, date_admission, date_sortie=None):
         if not id_patient or not id_lit:
             raise ValueError("Le code de service est le lit concerné sont obligatoires")
 
@@ -13,24 +13,24 @@ class SejourController():
     create = classmethod(create)
 
     def read(cls):
-        patient = SejourModel(0, 0, "")
+        patient = SejourModel(0, 0, 0, 0 , "")
         return patient.read_all()
     read = classmethod(read)
 
-    def update(cls, id_sejour, id_patient,id_sevice,id_lit, date_admission, date_sortie):
+    def update(cls, id_sejour, id_patient,id_service,id_lit, date_admission, date_sortie):
         if not id_patient or not id_lit:
             raise ValueError("Remplir tous les champs")
         if not isinstance(date_admission, datetime) or not isinstance(date_sortie, datetime):
             raise ValueError("Donnez une date valide AAAA-MM-JJ...")
-        patient = SejourModel(0, 0, "")
-        patient.update(id_sejour, id_patient,id_sevice,id_lit, date_admission, date_sortie)
+        patient = SejourModel(id_sejour, id_patient,id_service,id_lit, date_admission, date_sortie)
+        patient.update()
     update = classmethod(update)
 
     def delete(cls, id_sejour):
         if not id_sejour:
             raise ValueError("Entrez l'id du service")
-        patient = SejourModel(0, 0, "")
-        patient.delete(id_sejour)
+        patient = SejourModel(id_sejour, 0,0, 0, "")
+        patient.delete()
     delete = classmethod(delete)
         
 
