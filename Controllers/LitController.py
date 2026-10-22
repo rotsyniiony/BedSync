@@ -3,11 +3,10 @@ from Models.ServiceModel import *
 
 class LitController:
     def create(cls, code_lit, id_service, etat_lit, desc_lit):
-        t = []
         t = ServiceModel.get_service(id_service)
         if (not code_lit or not id_service):
             raise ValueError("Le code du lit et le service sont obligatoires")
-        if(t[5] == "INACTIF"):
+        if(t['statut'] == "INACTIF"):
             raise ValueError(f"Le service {t['nom_service']} est inactif")
         
         lit = LitModel(id_lit=0, code_lit=code_lit, id_service=id_service, etat_lit=etat_lit, desc_lit=desc_lit)

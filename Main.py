@@ -6,6 +6,7 @@ from Controllers.ServiceController import *
 from Controllers.SejourController import *
 from Controllers.MouvementController import *
 from Controllers.IndispoController import *
+from Models.ServiceModel import *
 
 
 ##PATIENT

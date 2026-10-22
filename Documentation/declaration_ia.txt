@@ -1,3 +1,4 @@
 -Génération de "checklist_projet.pdf" qui contient le plan d'action (étape par étape) de la réalisation du projet
 -Déboggage de PatientModel(UnboundLocalError: cannot access local variable 'curseur' where it is not associated with a value) dans finally(curseur.close())
 -Déboggage de update dans patient
+-Apprentissage de ma_connection.cursor(dictionary=True, buffered=True) retournant un dictionnaire depuis la base de données

@@ -109,12 +109,14 @@ class ServiceModel():
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
-            req = "SELECT FROM services WHERE id_service = %s"
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM services WHERE id_service = %s"
             valeur = (id_service,)
             curseur.execute(req, valeur)
             ma_connexion.commit()
-            liste = curseur.fetch()
+            liste = curseur.fetchone()
+            if(liste is None):
+                print("Aucun service trouvé")
         except Exception as e:
             print(f"Erreur de lecture pour cet id: {e}")
         finally:
