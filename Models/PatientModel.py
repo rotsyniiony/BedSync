@@ -35,13 +35,12 @@ class PatientModel():
             chaine_req = "INSERT INTO Patient VALUES(NULL, NULL, %s)"
             valeurs = (date_fiche,)
             curseur.execute(chaine_req, valeurs)
-            ma_connexion.commit()
 
             id_patient = curseur.lastrowid
             code_patient = f"P-{id_patient:04d}"
             chaine_req = "UPDATE Patient SET code_patient = %s WHERE id_patient = %s"
             valeurs = (code_patient, id_patient)
-            ma_connexion.commit()
+            curseur.execute(chaine_req, valeurs)
         except Exception as e:
             print(f"Erreur lors de l'ajout de patient: {e}")
 

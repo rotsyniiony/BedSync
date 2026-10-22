@@ -11,11 +11,11 @@ from Models.ServiceModel import *
 
 ##PATIENT
 
-PatientController.create()
+#PatientController.create()
 ##PatientController.update(9, 13, datetime(2026, 6, 7))
-##l = PatientController.read()
-##for x in (l):
-##    print(x)
+#l = PatientController.read()
+#for x in (l):
+#    print(x)
 
 ##PatientController.delete(4)
 

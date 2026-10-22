@@ -67,7 +67,7 @@ class SejourModel():
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
             req = "SELECT * FROM sejour"
             curseur.execute(req)
             liste = curseur.fetchall()
