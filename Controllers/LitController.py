@@ -40,3 +40,11 @@ class LitController:
         else:
             return liste
     rechercher_lit = classmethod(rechercher_lit)
+
+    def consulter_lit_service(cls, id_service):
+        t = LitModel.consulter_lit_service(id_service=id_service)
+        if(t == []):
+            raise ValueError("Aucun lit de ce service")
+        else:
+            return t
+    consulter_lit_service = classmethod(consulter_lit_service)

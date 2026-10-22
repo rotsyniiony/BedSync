@@ -112,3 +112,19 @@ class LitModel():
             ma_connexion.close()
         return liste
 
+    @classmethod
+    def consulter_lit_service(cls, id_service):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE id_service = %s"
+            valeur = (id_service,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des lits: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+

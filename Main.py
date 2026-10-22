@@ -27,7 +27,6 @@ from Models.ServiceModel import *
 #l = ServiceController.read()
 #for x in (l):
 #    print(x)
-
 #ServiceController.delete(1)
 #ServiceController.desactiver(2)
 
@@ -39,12 +38,14 @@ from Models.ServiceModel import *
 #l = LitController.read()
 #for x in (l):
 #    print(x)
-
 #LitController.delete(1)
-t = LitController.rechercher_lit(code_lit=2)
-for x in t.items():
-    print(x)
+#t = LitController.rechercher_lit(code_lit=2)
+#for x in t.items():
+#    print(x)
+t = LitController.consulter_lit_service(2)
 
+for x in t:
+    print(x)
 #SEJOUR
 
 #SejourController.create(id_lit=1, id_patient=5, id_service=2, date_admission=datetime(2026,10,21))

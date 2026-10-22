@@ -66,6 +66,7 @@ class ServiceController():
     @classmethod
     def desactiver(cls, id_service):
         ServiceModel.desactiver(id_service)
+
             
 
 
