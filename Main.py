@@ -33,7 +33,8 @@ from Models.ServiceModel import *
 
 #LIT
 
-#LitController.create(code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
+LitController.create(code_lit="LIT-001", id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
+
 #LitController.update(id_lit=1, code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="INDISPONIBLE")
 #l = LitController.read()
 #for x in (l):
@@ -42,10 +43,20 @@ from Models.ServiceModel import *
 #t = LitController.rechercher_lit(code_lit=2)
 #for x in t.items():
 #    print(x)
-t = LitController.consulter_lit_service(2)
+#t = LitController.consulter_lit_etat("DISPONIBLE")
 
-for x in t:
-    print(x)
+#for x in t:
+#    print(x)
+#t = LitController.compter_lits_service(2)
+#for x in t.items():
+#    print(x)
+
+#t = LitController.compter_lits_etablissement()
+#for x in t.items():
+#    print(x)
+
+
+
 #SEJOUR
 
 #SejourController.create(id_lit=1, id_patient=5, id_service=2, date_admission=datetime(2026,10,21))

@@ -3,6 +3,11 @@ from Models.ServiceModel import *
 
 class LitController:
     def create(cls, code_lit, id_service, etat_lit, desc_lit):
+        codes = LitModel.prendre_codes_lit()
+        
+        for x in codes:
+            if(code_lit == x):
+                raise ValueError("Un lit possède déjà ce code!")
         t = ServiceModel.get_service(id_service)
         if (not code_lit or not id_service):
             raise ValueError("Le code du lit et le service sont obligatoires")
@@ -48,3 +53,28 @@ class LitController:
         else:
             return t
     consulter_lit_service = classmethod(consulter_lit_service)
+
+    def consulter_lit_etat(cls, etat):
+        t = LitModel.consulter_lit_etat(etat=etat)
+        if(t == []):
+            raise ValueError("Aucun lit de cet état")
+        else:
+            return t
+    consulter_lit_etat = classmethod(consulter_lit_etat)
+
+    def compter_lits_service(cls, id_service):
+        t = LitModel.compter_lits_service(id_service=id_service)
+        if(t == []):
+            raise ValueError("Aucun li dans la base")
+        else:
+            return t
+    compter_lits_service = classmethod(compter_lits_service)
+
+    def compter_lits_etablissement(cls):
+        t = LitModel.compter_lits_etablissement()
+        if(t == []):
+            raise ValueError("Aucun li dans la base")
+        else:
+            return t
+    compter_lits_etablissement = classmethod(compter_lits_etablissement)
+
