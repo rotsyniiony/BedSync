@@ -32,3 +32,11 @@ class LitController:
         patient = LitModel(id_lit, 0, 0 , "", "")
         patient.delete()
     delete = classmethod(delete)
+
+    def rechercher_lit(cls, code_lit):
+        liste = LitModel.rechercher_lit(code_lit=code_lit)
+        if(liste == None):
+            raise ValueError("Aucun lit ne possède ce code")
+        else:
+            return liste
+    rechercher_lit = classmethod(rechercher_lit)

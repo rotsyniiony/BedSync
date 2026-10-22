@@ -1,14 +1,19 @@
 from Models.SejourModel import *
+from Models.ServiceModel import *
 from datetime import *
 
 class SejourController():
     
-    def create(cls, id_patient,id_sevice,id_lit, date_admission, date_sortie=None):
+    def create(cls, id_patient,id_service,id_lit, date_admission, date_sortie=None):
+        t = ServiceModel.get_service(id_service)
+        if(t == None):
+            raise ValueError("Aucun service de la sorte, non admission du sejour")
+        if(t['statut'] == "INACTIF"):
+            raise ValueError("Admission impossible: service inactif")
         if not id_patient or not id_lit:
             raise ValueError("Le code de service est le lit concerné sont obligatoires")
-
         
-        patient = SejourModel(0,id_patient,id_sevice,id_lit, date_admission, date_sortie)        
+        patient = SejourModel(0,id_patient,id_service,id_lit, date_admission, date_sortie)        
         patient.create()
     create = classmethod(create)
 

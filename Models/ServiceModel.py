@@ -106,7 +106,6 @@ class ServiceModel():
 
     @classmethod
     def get_service(cls, id_service):
-        liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
@@ -138,3 +137,20 @@ class ServiceModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    @classmethod
+    def chercher_noms(cls):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT nom_service FROM services"
+            valeur = ()
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des noms de services: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return [ligne["nom_service"] for ligne in liste]

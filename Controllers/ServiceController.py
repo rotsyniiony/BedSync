@@ -4,6 +4,10 @@ from datetime import *
 class ServiceController():
     
     def create(cls, nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
+        t = ServiceModel.chercher_noms()
+        for x in t:
+            if(x == nom_service):
+                raise ValueError("Un service de ce nom existe déjà")
         if not nom_service or not categorie_service or not desc_service or not seuil_occupation or not statut_service:
             raise ValueError("Le nom, la catégorie, la description, le seuil, le statut concernés sont obligatoires")
 
@@ -13,7 +17,7 @@ class ServiceController():
         if(seuil_occupation > 100 or seuil_occupation < 0):
             raise ValueError("Seuil d'occupation doit être entre 0 et 100")
 
-        if(statut_service != "ACTIF" or statut_service != "INACTIF"):
+        if(statut_service != "ACTIF" and statut_service != "INACTIF"):
             raise ValueError("le statut doit être soit actif soit inactif")
 
         if(desc_service == ""):

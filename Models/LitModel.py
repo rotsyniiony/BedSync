@@ -64,7 +64,7 @@ class LitModel():
             curseur.execute(req)
             liste = curseur.fetchall()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            print(f"Erreur de lecture des lits: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -96,4 +96,19 @@ class LitModel():
         finally:
             curseur.close()
             ma_connexion.close()
+    @classmethod
+    def rechercher_lit(cls, code_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE code_lit = %s"
+            valeur = (code_lit,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des lits: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
 
