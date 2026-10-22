@@ -1,4 +1,5 @@
 from Models.Connexion_base import *
+from datetime import date
 
 class PatientModel():
     def __init__(self, id, code, date):
@@ -25,14 +26,21 @@ class PatientModel():
     code_patient = property(get_code_patient, set_code_patient)
     date_fiche = property(get_date_fiche, set_date_fiche)
     
-    
-    def create(self):
+    @classmethod
+    def create(cls):
         try:
             ma_connexion = Connexion_base.get_connexion()            
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Patient VALUES(NULL, %s, %s)"
-            valeurs = (self.code_patient, self.date_fiche)
+            date_fiche = date.today()
+            chaine_req = "INSERT INTO Patient VALUES(NULL, NULL, %s)"
+            valeurs = (date_fiche,)
             curseur.execute(chaine_req, valeurs)
+            ma_connexion.commit()
+
+            id_patient = curseur.lastrowid
+            code_patient = f"P-{id_patient:04d}"
+            chaine_req = "UPDATE Patient SET code_patient = %s WHERE id_patient = %s"
+            valeurs = (code_patient, id_patient)
             ma_connexion.commit()
         except Exception as e:
             print(f"Erreur lors de l'ajout de patient: {e}")

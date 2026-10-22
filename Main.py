@@ -11,7 +11,7 @@ from Models.ServiceModel import *
 
 ##PATIENT
 
-##PatientController.create(11, '2026-10-09')
+PatientController.create()
 ##PatientController.update(9, 13, datetime(2026, 6, 7))
 ##l = PatientController.read()
 ##for x in (l):
@@ -33,7 +33,7 @@ from Models.ServiceModel import *
 
 #LIT
 
-LitController.create(code_lit="LIT-001", id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
+#LitController.create(code_lit="LIT-001", id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
 
 #LitController.update(id_lit=1, code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="INDISPONIBLE")
 #l = LitController.read()

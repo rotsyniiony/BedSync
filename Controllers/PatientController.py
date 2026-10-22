@@ -3,13 +3,8 @@ from datetime import *
 
 class PatientController():
     
-    def create(cls, code_patient, date_fiche):
-        if not code_patient or not date_fiche:
-            raise ValueError("Le code de patient est la date de fiche concernée sont obligatoires")
-
-        
-        patient = PatientModel(0, code_patient, date_fiche)        
-        patient.create()
+    def create(cls):
+        PatientModel.create()       
     create = classmethod(create)
 
     def read(cls):
