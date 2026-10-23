@@ -27,6 +27,10 @@ class PatientController():
         patient = PatientModel(id_patient, 0, "")
         patient.delete()
     delete = classmethod(delete)
+
+    def get_patient(cls, code_patient):
+        PatientModel.get_patient(code_patient=code_patient)
+        
         
 
     
