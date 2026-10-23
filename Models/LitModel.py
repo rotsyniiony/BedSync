@@ -1,7 +1,8 @@
 from Models.Connexion_base import *
+from Models.ServiceModel import *
 
 class LitModel():
-    def __init__(self, id_lit, id_service, code_lit, etat_lit, desc_lit):
+    def __init__(self, id_lit, id_service,desc_lit, code_lit=None, etat_lit="DISPONIBLE"):
         self.id_lit = id_lit
         self.id_service = id_service
         self.code_lit = code_lit
@@ -47,14 +48,39 @@ class LitModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Lit VALUES(NULL, %s, %s, %s, %s)"
-            valeurs = (self.id_service,self.code_lit, self.etat_lit, self.desc_lit)
+            chaine_req = "INSERT INTO Lit VALUES(NULL, %s, NULL, %s, %s)"
+            valeurs = (self.id_service, "DISPONIBLE", self.desc_lit)
             curseur.execute(chaine_req, valeurs)
+
+
+            t = ServiceModel.get_service(self.id_service)
+            id_lit = curseur.lastrowid
+            code_lit = f"LIT-{id_lit:04d}"
+            req = "UPDATE lit SET code_lit = %s WHERE id_lit = %s"
+            valeurs = (code_lit, id_lit)
+            curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:
             print(f"Erreur lors de l'ajout de lit: {e}")
         finally:
             curseur.close()
+
+    @classmethod
+    def update_etat(cls, etat_lit, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE lit SET etat_lit = %s WHERE id_lit = %s"
+            valeurs = (etat_lit, id_lit)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    
     def read_all(self):
         liste = []
         try:
@@ -229,3 +255,36 @@ class LitModel():
             curseur.close()
             ma_connexion.close()
         return [ligne['code_lit'] for ligne in liste]
+
+    @classmethod
+    def lit_occupe(cls, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE id_lit = %s AND etat_lit = %s"
+            valeur = (id_lit,"OCCUPE")
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des lits: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_lit(cls, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE id_lit = %s"
+            valeur = (id_lit,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture du lit {id_lit}: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+        

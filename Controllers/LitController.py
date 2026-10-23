@@ -2,19 +2,15 @@ from Models.LitModel import *
 from Models.ServiceModel import *
 
 class LitController:
-    def create(cls, code_lit, id_service, etat_lit, desc_lit):
-        codes = LitModel.prendre_codes_lit()
-        
-        for x in codes:
-            if(code_lit == x):
-                raise ValueError("Un lit possède déjà ce code!")
+    def create(cls, id_service, desc_lit):
+
         t = ServiceModel.get_service(id_service)
-        if (not code_lit or not id_service):
-            raise ValueError("Le code du lit et le service sont obligatoires")
+        if (not id_service):
+            raise ValueError("le service est obligatoire")
         if(t['statut'] == "INACTIF"):
             raise ValueError(f"Le service {t['nom_service']} est inactif")
         
-        lit = LitModel(id_lit=0, code_lit=code_lit, id_service=id_service, etat_lit=etat_lit, desc_lit=desc_lit)
+        lit = LitModel(id_lit=0, id_service=id_service, desc_lit=desc_lit)
         lit.create()
     create = classmethod(create)
 
@@ -77,4 +73,8 @@ class LitController:
         else:
             return t
     compter_lits_etablissement = classmethod(compter_lits_etablissement)
+
+        
+        
+
 

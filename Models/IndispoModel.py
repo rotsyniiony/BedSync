@@ -1,4 +1,5 @@
 from Models.Connexion_base import *
+from datetime import *
 
 class IndispoModel():
     def __init__(self, id, lit, deb, fin, motif):
@@ -52,6 +53,8 @@ class IndispoModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+
     def read_all(self):
         liste = []
         try:
@@ -93,3 +96,35 @@ class IndispoModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    @classmethod
+    def cloturer(cls, id_indispo):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            date_fin = date.today()
+            req = "UPDATE indispo SET date_fin = %s WHERE id_indispo = %s"
+            valeurs = (date_fin, id_indispo)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de cloturation: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    @classmethod
+    def chercher_indispo(cls, id_indispo):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
+            req = "SELECT * FROM indispo WHERE id_indispo = %s"
+            valeur = (id_indispo,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de recherche d'insdisponibilité à id {id_indispo}: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste

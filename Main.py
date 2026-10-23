@@ -33,7 +33,7 @@ from Models.ServiceModel import *
 
 #LIT
 
-#LitController.create(code_lit="LIT-001", id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="DISPONIBLE")
+#LitController.create(id_service=2, desc_lit="description: pour chirurgie ophtalmologie")
 
 #LitController.update(id_lit=1, code_lit=1, id_service=2, desc_lit="description: pour chirurgie ophtalmologie", etat_lit="INDISPONIBLE")
 #l = LitController.read()
@@ -78,6 +78,8 @@ from Models.ServiceModel import *
 
 #INDISPO
 #IndispoController.create(id_lit=1, motif="rien", date_debut=datetime(2026, 8, 7), date_fin=datetime(2026, 8, 7))
+
+#IndispoController.cloturer(5)
 
 #IndispoController.update(id_indispo=1, id_lit=1, motif="rien tout", date_debut=datetime(2026, 8, 7), date_fin=datetime(2026, 8, 7))
 #l = IndispoController.read()
