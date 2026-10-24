@@ -287,4 +287,6 @@ class LitModel():
             curseur.close()
             ma_connexion.close()
         return liste
+
+    
         

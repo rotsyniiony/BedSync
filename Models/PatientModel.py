@@ -128,5 +128,23 @@ class PatientModel():
             curseur.close()
             ma_connexion.close()
         return liste_patients
+
+    @classmethod
+    def patient_existe(cls, id_patient):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM patient WHERE id_patient = %s"
+            valeur = (id_patient, )
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture du patient: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    
     
 

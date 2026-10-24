@@ -1,13 +1,14 @@
 from Models.Connexion_base import *
 
 class SejourModel():
-    def __init__(self, id, patient, service, lit, adm, sortie=None):
+    def __init__(self, id, patient, service, lit, stat, adm, sortie=None):
         self.id_sejour = id
         self.id_patient = patient
         self.id_service = service
         self.id_lit = lit
         self.date_admission = adm
         self.date_sortie = sortie
+        self.statut_sejour = stat
 
     
 
@@ -53,9 +54,19 @@ class SejourModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Sejour VALUES(NULL, %s, %s, %s, %s, %s)"
-            valeurs = (self.id_patient, self.id_service, self.id_lit, self.date_admission, self.date_sortie)
+            chaine_req = "INSERT INTO sejour VALUES(NULL, %s, %s, %s, %s, %s, %s)"
+            valeurs = (self.id_patient, self.id_service, self.id_lit, self.date_admission, self.date_sortie, self.statut_sejour)
             curseur.execute(chaine_req, valeurs)
+
+            id_sejour = curseur.lastrowid
+            chaine_req = "INSERT INTO mouvement VALUES(NULL, %s,  %s, %s, %s)"
+            valeurs = (id_sejour, self.id_lit, "ADMISSION" , self.date_admission)
+            curseur.execute(chaine_req, valeurs)
+
+            req = "UPDATE lit SET etat_lit = %s WHERE id_lit = %s"
+            valeurs = ("OCCUPE", self.id_lit)
+            curseur.execute(req, valeurs)
+
             ma_connexion.commit()
         except Exception as e:
             print(f"Erreur lors de l'ajout de sejour: {e}")
@@ -104,4 +115,23 @@ class SejourModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+
+    @classmethod
+    def patient_encours(cls, id_patient):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_patient = %s AND statut_sejour = %s"
+            valeur = (id_patient, "EN COURS")
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    
     
