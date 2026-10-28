@@ -3,6 +3,7 @@ from Models.ServiceModel import *
 from Models.PatientModel import *
 from Models.LitModel import *
 from Models.MouvementModel import *
+from Models.IndispoModel import *
 from datetime import *
 
 class SejourController():
@@ -37,7 +38,7 @@ class SejourController():
         if(l['etat_lit'] != "DISPONIBLE"):
             raise ValueError("Admission non accordée: Ce lit n'est pas disponible")
         
-        date_admission = date.today()
+        date_admission = datetime.now()
         statut_sejour="EN COURS"
         patient = SejourModel(0,id_patient,id_service,id_lit,statut_sejour,date_admission, date_sortie)      
         patient.create()
@@ -47,6 +48,18 @@ class SejourController():
         patient = SejourModel(0, 0, 0, 0 , "")
         return patient.read_all()
     read = classmethod(read)
+
+    @classmethod
+    def cloturer(cls, id_s):
+        sejour = SejourModel.get_sejour(id_sejour=id_s)
+        indispos = IndispoModel.get_all_now(sejour['id_lit'])
+        SejourModel.cloturer(id_s=id_s)
+        m = MouvementModel(None, id_sejour=id_s, id_lit=sejour['id_lit'], type_mouvement="SORTIE", date_mouvement=datetime.now())
+        m.create()
+        if(indispos != []):
+            LitModel.indispo(sejour['id_lit'])
+        else:
+            LitModel.liberer(sejour['id_lit'])
 
     def update(cls, id_sejour, id_patient,id_service,id_lit, date_admission, date_sortie):
         if not id_patient or not id_lit:

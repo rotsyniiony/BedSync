@@ -139,6 +139,36 @@ class LitModel():
         return liste
 
     @classmethod
+    def liberer(id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE lit SET statut_lit WHERE id_lit = %s"
+            valeurs = ("DISPONIBLE", id_lit)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    @classmethod
+    def indispo(cls, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE lit SET statut_lit WHERE id_lit = %s"
+            valeurs = ("INDISPONIBLE", id_lit)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    @classmethod
     def consulter_lit_service(cls, id_service):
         try:
             ma_connexion = Connexion_base.get_connexion()

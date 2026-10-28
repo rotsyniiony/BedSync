@@ -128,3 +128,19 @@ class IndispoModel():
             curseur.close()
             ma_connexion.close()
         return liste
+
+    @classmethod
+    def get_all_now(cls, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
+            req = "SELECT * FROM indispo WHERE id_lit = %s AND date_fin = %s"
+            valeur = (id_lit, None)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de recherche d'insdisponibilité")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste

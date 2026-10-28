@@ -1,4 +1,5 @@
 from Models.Connexion_base import *
+from datetime import *
 
 class MouvementModel():
     def __init__(self, id_mouvement, id_sejour, id_lit, type_mouvement, date_mouvement):
@@ -7,6 +8,7 @@ class MouvementModel():
         self.id_lit = id_lit
         self.type_mouvement = type_mouvement
         self.date_mouvement = date_mouvement
+
 
     def get_id_mouvement(self):
         return self._id_mouvement
@@ -56,6 +58,20 @@ class MouvementModel():
             curseur.close()
             ma_connexion.close()
 
+    def cloturer(cls, id_m):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE Mouvement SET date_finMouvement = %s WHERE id_mouvement = %s"
+            valeurs = (datetime.now(), id_m)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
     def read_all(self):
         liste = []
         try:
@@ -71,6 +87,7 @@ class MouvementModel():
             ma_connexion.close()
         return liste
 
+    
     def update(self):
         try:
             ma_connexion = Connexion_base.get_connexion()

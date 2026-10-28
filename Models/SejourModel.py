@@ -1,4 +1,5 @@
 from Models.Connexion_base import *
+from datetime import *
 
 class SejourModel():
     def __init__(self, id, patient, service, lit, stat, adm, sortie=None):
@@ -49,6 +50,20 @@ class SejourModel():
     date_admission = property(get_admission, set_admission)
     date_sortie = property(get_sortie, set_sortie)
 
+    @classmethod
+    def cloturer(cls, id_s):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE sejour SET date_sortie = %s, statut_sejour = %s WHERE id_sejour = %s"
+            valeurs = (date.today(),"TERMINE",id_s)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
 
     def create(self):
         try:
@@ -115,6 +130,22 @@ class SejourModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    @classmethod
+    def get_sejour(cls, id_sejour):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s"
+            valeur = (id_sejour,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
 
 
     @classmethod

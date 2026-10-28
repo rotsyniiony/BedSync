@@ -59,7 +59,9 @@ from Models.ServiceModel import *
 
 #SEJOUR
 
-SejourController.create(id_lit=2, id_patient=14, id_service=2)
+#SejourController.create(id_lit=2, id_patient=14, id_service=2)
+
+SejourController.cloturer(id_s=7)
 #SejourController.update(id_sejour=1, id_lit=1, id_patient=5, id_service=1, date_admission=datetime(2026, 6, 7), date_sortie=datetime(2026, 6, 8))
 #l = SejourController.read()
 #for x in (l):
