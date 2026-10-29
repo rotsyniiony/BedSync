@@ -105,7 +105,7 @@ class ServiceModel():
             ma_connexion.close()
 
     @classmethod
-    def get_service(cls, id_service):
+    def read_service(cls, id_service):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)

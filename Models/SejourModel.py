@@ -117,6 +117,36 @@ class SejourModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    @classmethod
+    def update_lit(cls, id_lit, id_sejour):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE sejour SET id_lit = %s WHERE id_sejour = %s"
+            valeurs = (id_lit, id_sejour)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    @classmethod
+    def update_service(cls, id_service, id_sejour):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE sejour SET id_service = %s WHERE id_sejour = %s"
+            valeurs = (id_service, id_sejour)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
     def delete(self):
         try:
             ma_connexion = Connexion_base.get_connexion()
@@ -132,7 +162,7 @@ class SejourModel():
             ma_connexion.close()
 
     @classmethod
-    def get_sejour(cls, id_sejour):
+    def read_sejour(cls, id_sejour):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)

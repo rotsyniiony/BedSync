@@ -130,7 +130,7 @@ class IndispoModel():
         return liste
 
     @classmethod
-    def get_all_now(cls, id_lit):
+    def read_all_now(cls, id_lit):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(buffered=True, dictionary=True)

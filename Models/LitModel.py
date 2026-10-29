@@ -96,6 +96,7 @@ class LitModel():
             ma_connexion.close()
         return liste
 
+
     def update(self):
         try:
             ma_connexion = Connexion_base.get_connexion()
@@ -139,11 +140,11 @@ class LitModel():
         return liste
 
     @classmethod
-    def liberer(id_lit):
+    def liberer(cls, id_lit):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            req = "UPDATE lit SET statut_lit WHERE id_lit = %s"
+            req = "UPDATE lit SET etat_lit = %s WHERE id_lit = %s"
             valeurs = ("DISPONIBLE", id_lit)
             curseur.execute(req, valeurs)
             ma_connexion.commit()
@@ -158,8 +159,23 @@ class LitModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            req = "UPDATE lit SET statut_lit WHERE id_lit = %s"
+            req = "UPDATE lit SET etat_lit = %s WHERE id_lit = %s"
             valeurs = ("INDISPONIBLE", id_lit)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    @classmethod
+    def occuper(cls, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE lit SET etat_lit = %s WHERE id_lit = %s"
+            valeurs = ("OCCUPE", id_lit)
             curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:
