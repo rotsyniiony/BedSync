@@ -83,7 +83,7 @@ class SejourController():
         SejourModel.update_lit(id_lit, id_sejour)
 
         #créer mouvement Transfert
-        t = MouvementModel(None, id_sejour=id_sejour, id_lit=id_lit, type_mouvement="TRANSFERT", date_mouvement=datetime.now())
+        t = MouvementModel(None, id_sejour=id_sejour, id_lit=id_lit, type_mouvement="TRANSFERT", date_mouvement=datetime.now(), desc=f"Lit: {sejour['id_lit']} vers Lit: {nouveau_lit['id_lit']}")
         t.create()
 
         #rendre dispo le lit de départ

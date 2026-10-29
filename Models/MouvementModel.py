@@ -2,12 +2,13 @@ from Models.Connexion_base import *
 from datetime import *
 
 class MouvementModel():
-    def __init__(self, id_mouvement, id_sejour, id_lit, type_mouvement, date_mouvement):
+    def __init__(self, id_mouvement, id_sejour, id_lit, type_mouvement, date_mouvement, desc="Aucune description"):
         self.id_mouvement = id_mouvement
         self.id_sejour = id_sejour
         self.id_lit = id_lit
         self.type_mouvement = type_mouvement
         self.date_mouvement = date_mouvement
+        self.desc_mouvement = desc
 
 
     def get_id_mouvement(self):
@@ -47,8 +48,8 @@ class MouvementModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s)"
-            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement)
+            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s, %s)"
+            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement, self.desc_mouvement)
             print(f"{self.id_lit}")
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
