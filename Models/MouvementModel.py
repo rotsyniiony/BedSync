@@ -59,19 +59,39 @@ class MouvementModel():
             curseur.close()
             ma_connexion.close()
 
-    def cloturer(cls, id_m):
+    @classmethod
+    def consulter_mouvement_lit(cls, id_lit):
+        liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
-            req = "UPDATE Mouvement SET date_finMouvement = %s WHERE id_mouvement = %s"
-            valeurs = (datetime.now(), id_m)
-            curseur.execute(req, valeurs)
-            ma_connexion.commit()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM Mouvement WHERE id_lit = %s"
+            valeur = (id_lit,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
         except Exception as e:
-            print(f"Erreur de modification: {e}")
+            print(f"Erreur de lecture des mouvements: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
+        return liste
+
+    @classmethod
+    def consulter_mouvement_sejour(cls, id_sejour):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM Mouvement WHERE id_sejour = %s"
+            valeur = (id_sejour,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des mouvements: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
 
     def read_all(self):
         liste = []

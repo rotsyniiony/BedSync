@@ -177,6 +177,54 @@ class SejourModel():
             ma_connexion.close()
         return liste
 
+    @classmethod
+    def consulter_sejour_statut(cls, id_sejour, statut):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s AND statut_sejour = %s"
+            valeur = (id_sejour, statut)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def consulter_sejour_service(cls, id_sejour, service):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s AND id_service = %s"
+            valeur = (id_sejour, service)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def consulter_sejour_periode(cls, id_sejour, date1, date2):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s AND date_admission > %s AND date_admission < %s "
+            valeur = (id_sejour, date1, date2)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
 
     @classmethod
     def patient_encours(cls, id_patient):
