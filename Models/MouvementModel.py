@@ -50,7 +50,6 @@ class MouvementModel():
             curseur = ma_connexion.cursor()
             chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s, %s)"
             valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement, self.desc_mouvement)
-            print(f"{self.id_lit}")
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:

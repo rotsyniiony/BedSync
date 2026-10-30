@@ -334,5 +334,23 @@ class LitModel():
             ma_connexion.close()
         return liste
 
+    @classmethod
+    def lits_occupes(cls):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT id_lit FROM lit WHERE etat_lit = %s"
+            valeur = ("OCCUPE",)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des lits occupes: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+     
+
     
         
