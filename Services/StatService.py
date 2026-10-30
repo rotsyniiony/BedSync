@@ -32,8 +32,8 @@ class StatService():
                     raise ValueError(f"ces sejours ont le même lit: {sejour[i]['id_sejour']}")
 
     @classmethod
-    def compter_lits_service(cls):
-        liste = LitModel.compter_lits_service()
+    def compter_lits_service(cls, id_service):
+        liste = LitModel.compter_lits_service( id_service= id_service)
         return liste
     
     @classmethod
