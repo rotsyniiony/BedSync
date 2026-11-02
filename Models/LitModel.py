@@ -1,5 +1,6 @@
 from Models.Connexion_base import *
 from Models.ServiceModel import *
+from datetime import *
 
 class LitModel():
     def __init__(self, id_lit, id_service,desc_lit, code_lit=None, etat_lit="DISPONIBLE"):
@@ -285,6 +286,7 @@ class LitModel():
             curseur.close()
             ma_connexion.close()
         return result
+
 
     @classmethod
     def prendre_codes_lit(cls):

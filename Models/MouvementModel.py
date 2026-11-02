@@ -2,13 +2,13 @@ from Models.Connexion_base import *
 from datetime import *
 
 class MouvementModel():
-    def __init__(self, id_mouvement, id_sejour, id_lit, type_mouvement, date_mouvement, desc="Aucune description"):
+    def __init__(self, id_mouvement, id_sejour, id_lit, type_mouvement, date_mouvement, date_fin=None):
         self.id_mouvement = id_mouvement
         self.id_sejour = id_sejour
         self.id_lit = id_lit
         self.type_mouvement = type_mouvement
         self.date_mouvement = date_mouvement
-        self.desc_mouvement = desc
+        self.date_fin_mouvement = date_fin
 
 
     def get_id_mouvement(self):
@@ -48,8 +48,8 @@ class MouvementModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s, %s)"
-            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement, self.desc_mouvement)
+            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s, %s, %s)"
+            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement,self.date_fin_mouvement, self.desc_mouvement)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:
@@ -57,6 +57,20 @@ class MouvementModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    @classmethod
+    def lits_instant_t():
+        today = datetime.today()
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT occupes, COUNT(*) FROM mouvement WHERE type_mouvement = 'ADMISSION' OR type_mouvement = 'TRANSFERT', date"
+            valeur = ("DISPONIBLE",)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+            result['disponibles'] = len(liste)
+        except Exception as e:
+            print(f"Erreur de lecture des lits par état: {e}")
 
     @classmethod
     def consulter_mouvement_lit(cls, id_lit):

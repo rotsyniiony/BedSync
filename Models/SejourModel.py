@@ -72,22 +72,15 @@ class SejourModel():
             chaine_req = "INSERT INTO sejour VALUES(NULL, %s, %s, %s, %s, %s, %s)"
             valeurs = (self.id_patient, self.id_service, self.id_lit, self.date_admission, self.date_sortie, self.statut_sejour)
             curseur.execute(chaine_req, valeurs)
-
-            id_sejour = curseur.lastrowid
-            chaine_req = "INSERT INTO mouvement VALUES(NULL, %s,  %s, %s, %s)"
-            valeurs = (id_sejour, self.id_lit, "ADMISSION" , self.date_admission)
-            curseur.execute(chaine_req, valeurs)
-
-            req = "UPDATE lit SET etat_lit = %s WHERE id_lit = %s"
-            valeurs = ("OCCUPE", self.id_lit)
-            curseur.execute(req, valeurs)
-
+            id = curseur.lastrowid
             ma_connexion.commit()
         except Exception as e:
             print(f"Erreur lors de l'ajout de sejour: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
+        return id
+            
 
     def read_all(self):
         liste = []

@@ -16,7 +16,7 @@ class MouvementController():
                 raise ValueError(f"Ce sejour est {sejour['statut_sejour']}")
             if(date_mouvement <= sejour['date_admission']):
                 raise ValueError(f"Date antérieure à la date d'admission")
-            patient = MouvementModel(id_mouvement=0, id_sejour=id_sejour, id_lit=id_lit, type_mouvement=type_mouvement, date_mouvement=date_mouvement) 
+            patient = MouvementModel(id_mouvement=0, id_sejour=id_sejour, id_lit=id_lit, type_mouvement=type_mouvement, date_mouvement=date_mouvement, date_fin=date_mouvement) 
 
         
         patient = MouvementModel(id_mouvement=0, id_sejour=id_sejour, id_lit=id_lit, type_mouvement=type_mouvement, date_mouvement=date_mouvement)        

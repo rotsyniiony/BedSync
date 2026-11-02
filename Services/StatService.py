@@ -42,6 +42,12 @@ class StatService():
         return liste
 
     @classmethod
+    def taux_occupation_instantane():
+        liste = LitModel.compter_lits_etablissement()
+        T_inst = liste['occupes'] / (liste['occupes'] + liste['disponibles'])
+        return T_inst
+
+    @classmethod
     def occupation_instantanee(cls):
         liste = LitModel.compter_lits_etablissement()
         taux = liste['occupes'] / (liste['occupes'] + liste['indisponibles'])

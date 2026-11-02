@@ -9,7 +9,6 @@ class LitController:
             raise ValueError("le service est obligatoire")
         if(t['statut'] == "INACTIF"):
             raise ValueError(f"Le service {t['nom_service']} est inactif")
-        
         lit = LitModel(id_lit=0, id_service=id_service, desc_lit=desc_lit)
         lit.create()
     create = classmethod(create)
