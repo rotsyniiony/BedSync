@@ -37,12 +37,10 @@ class SejourController():
             raise ValueError("Admission non accordée: Ce lit n'appartient pas à ce service")
         if(l['etat_lit'] != "DISPONIBLE"):
             raise ValueError("Admission non accordée: Ce lit n'est pas disponible")
-        
         date_admission = datetime.now()
-        statut_sejour="EN COURS"
-        patient = SejourModel(0,id_patient,id_service,id_lit,statut_sejour,date_admission, date_sortie)      
-        patient.create()
-    create = classmethod(create)
+        id = SejourModel(0, id_patient,id_service,id_lit, "EN_COURS", date_admission).create()
+        MouvementModel(0, id, id_lit, "ADMISSION", date_admission).create()
+        LitModel.occuper(id_lit)
 
     def read(cls):
         patient = SejourModel(0, 0, 0, 0 , "")
@@ -55,35 +53,41 @@ class SejourController():
         indispos = IndispoModel.read_all_now(sejour['id_lit'])
         SejourModel.cloturer(id_s=id_s)
         m = MouvementModel(None, id_sejour=id_s, id_lit=sejour['id_lit'], type_mouvement="SORTIE", date_mouvement=datetime.now())
+        dernier_mouvement = MouvementModel.read_mouvements(id_sejour= id_s)
         m.create()
         if(indispos != []):
             LitModel.indispo(sejour['id_lit'])
         else:
             LitModel.liberer(sejour['id_lit'])
+        #cloturer dernier mouvement
+        MouvementModel.cloturer(dernier_mouvement['id_mouvement'])
 
     @classmethod
     def transferer(cls,id_lit, id_sejour):
         nouveau_lit = LitModel.read_lit(id_lit=id_lit)
         sejour = SejourModel.read_sejour(id_sejour=id_sejour)
         service = ServiceModel.read_service(id_service=nouveau_lit['id_service'])
+        dernier_mouvement = MouvementModel.read_mouvements(id_sejour= id_sejour)
 
         if(nouveau_lit['etat_lit'] != "DISPONIBLE"):
             raise ValueError(f"Lit {nouveau_lit['etat_lit']}")
 
         if(sejour['statut_sejour'] != "EN COURS"):
             raise ValueError(f"Séjour est {sejour['statut_sejour']}")
-
         if(id_lit == sejour['id_lit']):
             raise ValueError("C'est le même lit")
 
         if(service['statut'] != "ACTIF"):
             raise ValueError(f"Le service du lit d'arrivée est {service['statut_service']}")
 
+        if(dernier_mouvement == []):
+            raise ValueError("Aucun sejour avec date non cloturée pour ce sejour")
+
         #changer le numéro de lit du séjour
         SejourModel.update_lit(id_lit, id_sejour)
 
         #créer mouvement Transfert
-        t = MouvementModel(None, id_sejour=id_sejour, id_lit=id_lit, type_mouvement="TRANSFERT", date_mouvement=datetime.now(), desc=f"Lit: {sejour['id_lit']} vers Lit: {nouveau_lit['id_lit']}")
+        t = MouvementModel(None, id_sejour=id_sejour, id_lit=id_lit, type_mouvement="TRANSFERT", date_mouvement=datetime.now())
         t.create()
 
         #rendre dispo le lit de départ
@@ -91,6 +95,9 @@ class SejourController():
 
         #rendre occupé le lit d'arrivée
         LitModel.occuper(id_lit=id_lit)
+
+        #cloturer dernier mouvement
+        MouvementModel.cloturer(dernier_mouvement['id_mouvement'])
 
         if(service['id_service'] != sejour['id_service']):
             SejourModel.update_service(id_service=service['id_service'])

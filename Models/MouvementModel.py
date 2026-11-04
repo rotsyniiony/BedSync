@@ -10,6 +10,37 @@ class MouvementModel():
         self.date_mouvement = date_mouvement
         self.date_fin_mouvement = date_fin
 
+    @classmethod
+    def read_mouvement (cls, id):
+        res = {}
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary = True, buffered = True)
+            chaine_req = "SELECT * Mouvement WHERE id_sejour = %s AND date_fin_mouvement = %s"
+            valeurs = (id, datetime.now())
+            curseur.execute(chaine_req, valeurs)
+            res = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur lors de l'ajout de mouvement : {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
+    @classmethod
+    def cloturer(cls, id):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE mouvement SET date_fin_mouvement = %s WHERE id_mouvement = %s"
+            valeurs = (datetime.now(), id)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
+        except Exception as e:
+            print(f"Erreur de modification: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+
 
     def get_id_mouvement(self):
         return self._id_mouvement
@@ -48,8 +79,8 @@ class MouvementModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s, %s, %s)"
-            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement,self.date_fin_mouvement, self.desc_mouvement)
+            chaine_req = "INSERT INTO Mouvement VALUES(NULL, %s,  %s, %s, %s, %s)"
+            valeurs = (self.id_sejour, self.id_lit, self.type_mouvement, self.date_mouvement,self.date_fin_mouvement)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:
@@ -60,6 +91,7 @@ class MouvementModel():
 
     @classmethod
     def lits_instant_t():
+        result = {}
         today = datetime.today()
         try:
             ma_connexion = Connexion_base.get_connexion()
