@@ -89,29 +89,15 @@ class MouvementModel():
             curseur.close()
             ma_connexion.close()
 
-    @classmethod
-    def lits_instant_t():
-        result = {}
-        today = datetime.today()
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT occupes, COUNT(*) FROM mouvement WHERE type_mouvement = 'ADMISSION' OR type_mouvement = 'TRANSFERT', date"
-            valeur = ("DISPONIBLE",)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['disponibles'] = len(liste)
-        except Exception as e:
-            print(f"Erreur de lecture des lits par état: {e}")
 
     @classmethod
-    def consulter_mouvement_lit(cls, id_lit):
+    def read_mouvement(cls, id_mouvement):
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM Mouvement WHERE id_lit = %s"
-            valeur = (id_lit,)
+            req = "SELECT * FROM Mouvement WHERE id_mouvement = %s"
+            valeur = (id_mouvement,)
             curseur.execute(req, valeur)
             liste = curseur.fetchall()
         except Exception as e:
@@ -122,7 +108,7 @@ class MouvementModel():
         return liste
 
     @classmethod
-    def consulter_mouvement_sejour(cls, id_sejour):
+    def read_by_sejour(cls, id_sejour):
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
@@ -145,6 +131,23 @@ class MouvementModel():
             curseur = ma_connexion.cursor()
             req = "SELECT * FROM Mouvement"
             curseur.execute(req)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des mouvements: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_last_mouvement(cls, id_sejour):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor()
+            req = "SELECT * FROM Mouvement WHERE id_sejour = %s AND date_fin_mouvement IS NULL"
+            valeurs = (id_sejour, )
+            curseur.execute(req, valeurs)
             liste = curseur.fetchall()
         except Exception as e:
             print(f"Erreur de lecture des mouvements: {e}")
@@ -180,5 +183,8 @@ class MouvementModel():
         finally:
             curseur.close()
             ma_connexion.close()
+
+    
+
 
         

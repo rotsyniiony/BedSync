@@ -13,7 +13,7 @@ class AlerteModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
             chaine_req = "INSERT INTO alertes VALUES(NULL, %s,  %s, %s, %s, %s)"
-            valeurs = (self.service, self.type_alerte, self.description, self.date_alerte, self.regle)
+            valeurs = (self.id_service, self.type_alerte, self.description, self.date_alerte, self.regle)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:

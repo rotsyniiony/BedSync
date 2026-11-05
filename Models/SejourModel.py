@@ -11,7 +11,6 @@ class SejourModel():
         self.date_sortie = sortie
         self.statut_sejour = stat
 
-    
 
     def get_id_sejour(self):
         return self._id_sejour
@@ -50,20 +49,7 @@ class SejourModel():
     date_admission = property(get_admission, set_admission)
     date_sortie = property(get_sortie, set_sortie)
 
-    @classmethod
-    def cloturer(cls, id_s):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
-            req = "UPDATE sejour SET date_sortie = %s, statut_sejour = %s WHERE id_sejour = %s"
-            valeurs = (date.today(),"TERMINE",id_s)
-            curseur.execute(req, valeurs)
-            ma_connexion.commit()
-        except Exception as e:
-            print(f"Erreur de modification: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
+    
 
     def create(self):
         try:
@@ -90,6 +76,71 @@ class SejourModel():
             req = "SELECT * FROM sejour"
             curseur.execute(req)
             liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_by_periode(cls, id_sejour, date1, date2):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s AND date_admission > %s AND date_admission < %s "
+            valeur = (id_sejour, date1, date2)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+
+    @classmethod
+    def read_sejour(cls, id_sejour):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s"
+            valeur = (id_sejour,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_by_statut(cls, id_sejour, statut):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s AND statut_sejour = %s"
+            valeur = (id_sejour, statut)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_by_service(cls, id_sejour, service):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM sejour WHERE id_sejour = %s AND id_service = %s"
+            valeur = (id_sejour, service)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
         except Exception as e:
             print(f"Erreur de lecture des sejours: {e}")
         finally:
@@ -154,73 +205,10 @@ class SejourModel():
             curseur.close()
             ma_connexion.close()
 
+ 
+    #OTHERS
     @classmethod
-    def read_sejour(cls, id_sejour):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM sejour WHERE id_sejour = %s"
-            valeur = (id_sejour,)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def consulter_sejour_statut(cls, id_sejour, statut):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM sejour WHERE id_sejour = %s AND statut_sejour = %s"
-            valeur = (id_sejour, statut)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def consulter_sejour_service(cls, id_sejour, service):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM sejour WHERE id_sejour = %s AND id_service = %s"
-            valeur = (id_sejour, service)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def consulter_sejour_periode(cls, id_sejour, date1, date2):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM sejour WHERE id_sejour = %s AND date_admission > %s AND date_admission < %s "
-            valeur = (id_sejour, date1, date2)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-
-    @classmethod
-    def patient_encours(cls, id_patient):
+    def is_patient_encours(cls, id_patient):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
@@ -233,54 +221,21 @@ class SejourModel():
         finally:
             curseur.close()
             ma_connexion.close()
-        return liste
+        return (liste != [])
 
     @classmethod
-    def lit_a_sejour(cls, id_lit):
+    def cloturer(cls, id_s):
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT id_sejour FROM sejour WHERE id_lit = %s AND statut_sejour = %s"
-            valeur = (id_lit,"EN_COURS")
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
+            curseur = ma_connexion.cursor()
+            req = "UPDATE sejour SET date_sortie = %s, statut_sejour = %s WHERE id_sejour = %s"
+            valeurs = (date.today(),"TERMINE",id_s)
+            curseur.execute(req, valeurs)
+            ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            print(f"Erreur de modification: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
-        return liste
 
-    @classmethod
-    def sejour_a_lit(cls):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT id_sejour, id_lit FROM sejour INNER JOIN lit ON sejour.id_lit = lit.id_lit WHERE statut_sejour = %s AND etat_lit != %s"
-            valeur = ("EN_COURS","OCCUPE")
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def sejour_deux_lits():
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT id_sejour, id_lit FROM sejour WHERE statut_sejour = %s"
-            valeur = ("EN_COURS",)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-    
     

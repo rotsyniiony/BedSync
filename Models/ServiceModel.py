@@ -77,6 +77,25 @@ class ServiceModel():
             ma_connexion.close()
         return liste
 
+    @classmethod
+    def read_service(cls, id_service):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM services WHERE id_service = %s"
+            valeur = (id_service,)
+            curseur.execute(req, valeur)
+            ma_connexion.commit()
+            liste = curseur.fetchone()
+            if(liste is None):
+                print("Aucun service trouvé")
+        except Exception as e:
+            print(f"Erreur de lecture pour cet id: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
     def update(self):
         try:
             ma_connexion = Connexion_base.get_connexion()
@@ -104,24 +123,7 @@ class ServiceModel():
             curseur.close()
             ma_connexion.close()
 
-    @classmethod
-    def read_service(cls, id_service):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM services WHERE id_service = %s"
-            valeur = (id_service,)
-            curseur.execute(req, valeur)
-            ma_connexion.commit()
-            liste = curseur.fetchone()
-            if(liste is None):
-                print("Aucun service trouvé")
-        except Exception as e:
-            print(f"Erreur de lecture pour cet id: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
+   #OTHERS 
 
     @classmethod
     def desactiver(cls, id_service):
@@ -139,12 +141,13 @@ class ServiceModel():
             ma_connexion.close()
 
     @classmethod
-    def chercher_noms(cls):
+    def nom_service_existe(cls, nom):
+        liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT nom_service FROM services"
-            valeur = ()
+            req = "SELECT id_service, nom_service FROM service WHERE nom_service = %s"
+            valeur = (nom, )
             curseur.execute(req, valeur)
             ma_connexion.commit()
             liste = curseur.fetchall()
@@ -153,31 +156,5 @@ class ServiceModel():
         finally:
             curseur.close()
             ma_connexion.close()
-        return [ligne["nom_service"] for ligne in liste]
+        return (liste != [])
 
-    @classmethod
-    def consulter_lit_service(id_service):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT " \
-            "s.id_service," \
-            "s.nom_service," \
-            "l.id_lit," \
-            "l.code_lit," \
-            "l.etat_lit," \
-            "l.desc_lit," \
-            " FROM services INNER " \
-            "JOIN lit AS l ON s.id_lit WHERE id_service = %s"
-            valeur = (id_service,)
-            curseur.execute(req, valeur)
-            ma_connexion.commit()
-            liste = curseur.fetchone()
-            if(liste is None):
-                print("Aucun service trouvé")
-        except Exception as e:
-            print(f"Erreur de lecture pour cet id: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste

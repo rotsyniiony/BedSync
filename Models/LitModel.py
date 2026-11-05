@@ -96,6 +96,86 @@ class LitModel():
             curseur.close()
             ma_connexion.close()
         return liste
+    
+    @classmethod
+    def read_by_code(cls, code_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE code_lit = %s"
+            valeur = (code_lit,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            print(f"Erreur de lecture des lits: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_by_service(cls, id_service):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE id_service = %s"
+            valeur = (id_service,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des lits: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_by_etat(cls, etat):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE etat_lit = %s"
+            valeur = (etat,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des lits par état: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_lit(cls, id_lit):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM lit WHERE id_lit = %s"
+            valeur = (id_lit,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture du lit {id_lit}: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    @classmethod
+    def read_all_occupe(cls):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT id_lit FROM lit WHERE etat_lit = %s"
+            valeur = ("OCCUPE",)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des lits occupes: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
 
 
     def update(self):
@@ -124,21 +204,8 @@ class LitModel():
         finally:
             curseur.close()
             ma_connexion.close()
-    @classmethod
-    def rechercher_lit(cls, code_lit):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE code_lit = %s"
-            valeur = (code_lit,)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            print(f"Erreur de lecture des lits: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
+
+    #OTHERS
 
     @classmethod
     def liberer(cls, id_lit):
@@ -185,127 +252,10 @@ class LitModel():
             curseur.close()
             ma_connexion.close()
 
+
+    
     @classmethod
-    def consulter_lit_service(cls, id_service):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE id_service = %s"
-            valeur = (id_service,)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-        except Exception as e:
-            print(f"Erreur de lecture des lits: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def consulter_lit_etat(cls, etat):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE etat_lit = %s"
-            valeur = (etat,)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-        except Exception as e:
-            print(f"Erreur de lecture des lits par état: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def compter_lits_service(cls, id_service):
-        result = {}
-        liste = []
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE etat_lit = %s AND id_service = %s"
-            valeur = ("DISPONIBLE", id_service)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['disponibles'] = len(liste)
-
-            liste = []
-            req = "SELECT * FROM lit WHERE etat_lit = %s AND id_service = %s"
-            valeur = ("INDISPONIBLE",id_service)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['indisponibles'] = len(liste)
-
-            liste = []
-            req = "SELECT * FROM lit WHERE etat_lit = %s AND id_service = %s"
-            valeur = ("OCCUPÉS",id_service)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['occupes'] = len(liste)
-
-            
-        except Exception as e:
-            print(f"Erreur de lecture des lits par état: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return result
-
-    @classmethod
-    def compter_lits_etablissement(cls):
-        result = {}
-        liste = []
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE etat_lit = %s"
-            valeur = ("DISPONIBLE",)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['disponibles'] = len(liste)
-
-            liste = []
-            req = "SELECT * FROM lit WHERE etat_lit = %s"
-            valeur = ("INDISPONIBLE",)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['indisponibles'] = len(liste)
-
-            liste = []
-            req = "SELECT * FROM lit WHERE etat_lit = %s"
-            valeur = ("OCCUPÉS",)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchall()
-            result['occupes'] = len(liste)
-
-            
-        except Exception as e:
-            print(f"Erreur de lecture des lits par état: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return result
-
-
-    @classmethod
-    def prendre_codes_lit(cls):
-        liste = []
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT code_lit FROM lit"
-            curseur.execute(req)
-            liste = curseur.fetchall()
-        except Exception as e:
-            print(f"Erreur de lecture des lits: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return [ligne['code_lit'] for ligne in liste]
-
-    @classmethod
-    def lit_occupe(cls, id_lit):
+    def is_lit_occupe(cls, id_lit):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
@@ -318,39 +268,9 @@ class LitModel():
         finally:
             curseur.close()
             ma_connexion.close()
-        return liste
+        return (liste != [])
 
-    @classmethod
-    def read_lit(cls, id_lit):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE id_lit = %s"
-            valeur = (id_lit,)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            raise ValueError(f"Erreur de lecture du lit {id_lit}: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
-
-    @classmethod
-    def lits_occupes(cls):
-        try:
-            ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT id_lit FROM lit WHERE etat_lit = %s"
-            valeur = ("OCCUPE",)
-            curseur.execute(req, valeur)
-            liste = curseur.fetchone()
-        except Exception as e:
-            raise ValueError(f"Erreur de lecture des lits occupes: {e}")
-        finally:
-            curseur.close()
-            ma_connexion.close()
-        return liste
+    
 
      
 

@@ -44,7 +44,7 @@ class IndispoController():
 
     def cloturer(cls, id_indispo):
         IndispoModel.cloturer(id_indispo)
-        t = IndispoModel.chercher_indispo(id_indispo=id_indispo)
+        t = IndispoModel.read_indispo(id_indispo=id_indispo)
         LitModel.update_etat("DISPONIBLE", t['id_lit'])
     cloturer = classmethod(cloturer)
 

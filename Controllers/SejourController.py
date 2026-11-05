@@ -9,17 +9,17 @@ from datetime import *
 class SejourController():
     
     def create(cls, id_patient,id_service,id_lit,date_sortie=None):
-        p = PatientModel.patient_existe(id_patient=id_patient)
-        c = SejourModel.patient_encours(id_patient=id_patient)
+        p = PatientModel.is_patient_existe(id_patient=id_patient)
+        c = SejourModel.is_patient_encours(id_patient=id_patient)
         t = ServiceModel.read_service(id_service)
         l = LitModel.read_lit(id_lit=id_lit)
         
         #VERIFIER PATIENT EXISTE
-        if(p == None):
+        if(p == False):
             raise ValueError("Admission non accordée: Ce patient n'existe pas")
 
         #VERIFIER SI PATIENT DANS SEJOUR EN COURS
-        if(c != None):
+        if(c == True):
             raise ValueError("Admission non accordée: Ce patient est dans un séjour en cours")
 
         #VERIFIER SERVICE EXISTANT
@@ -42,24 +42,38 @@ class SejourController():
         MouvementModel(0, id, id_lit, "ADMISSION", date_admission).create()
         LitModel.occuper(id_lit)
 
-    def read(cls):
+    @classmethod
+    def read_all(cls):
         patient = SejourModel(0, 0, 0, 0 , "")
         return patient.read_all()
-    read = classmethod(read)
 
     @classmethod
     def cloturer(cls, id_s):
         sejour = SejourModel.read_sejour(id_sejour=id_s)
+        #SI SEJOUR EXISTE
+        if(sejour == []):
+            raise ValueError("Echec de cloture: Ce séjour n'existe pas dans la table séjour")
+
+    
         indispos = IndispoModel.read_all_now(sejour['id_lit'])
         SejourModel.cloturer(id_s=id_s)
-        m = MouvementModel(None, id_sejour=id_s, id_lit=sejour['id_lit'], type_mouvement="SORTIE", date_mouvement=datetime.now())
-        dernier_mouvement = MouvementModel.read_mouvements(id_sejour= id_s)
-        m.create()
+        dernier_mouvement = MouvementModel.read_last_mouvement(id_sejour=id_s)
+
+        #SI MOUVEMENT EN COURS EXISTE
+        if(dernier_mouvement == []):
+            raise ValueError("Echec de cloture: Aucun mouvement en cours dans la table mouvement")
+
+        #CREER MOUVEMENT DE SORTIE
+        m = MouvementModel(None, id_sejour=id_s, id_lit=sejour['id_lit'], type_mouvement="SORTIE", date_mouvement=datetime.now(), date_fin=datetime.now())
+        m.create()     
+
+        #INDISPO OU LIBERER LE LIT
         if(indispos != []):
             LitModel.indispo(sejour['id_lit'])
         else:
             LitModel.liberer(sejour['id_lit'])
-        #cloturer dernier mouvement
+
+        #CLOTURER LE DERNIER MOUVEMENT
         MouvementModel.cloturer(dernier_mouvement['id_mouvement'])
 
     @classmethod

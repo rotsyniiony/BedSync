@@ -4,7 +4,7 @@ from Models.ServiceModel import *
 class LitController:
     def create(cls, id_service, desc_lit):
 
-        t = ServiceModel.get_service(id_service)
+        t = ServiceModel.read_service(id_service)
         if (not id_service):
             raise ValueError("le service est obligatoire")
         if(t['statut'] == "INACTIF"):
@@ -33,45 +33,30 @@ class LitController:
         patient.delete()
     delete = classmethod(delete)
 
-    def rechercher_lit(cls, code_lit):
-        liste = LitModel.rechercher_lit(code_lit=code_lit)
+    @classmethod
+    def read_by_code(cls, code_lit):
+        liste = LitModel.read_by_code(code_lit=code_lit)
         if(liste == None):
             raise ValueError("Aucun lit ne possède ce code")
         else:
             return liste
-    rechercher_lit = classmethod(rechercher_lit)
 
-    def consulter_lit_service(cls, id_service):
-        t = LitModel.consulter_lit_service(id_service=id_service)
+    @classmethod
+    def read_by_service(cls, id_service):
+        t = LitModel.read_by_service(id_service=id_service)
         if(t == []):
             raise ValueError("Aucun lit de ce service")
         else:
             return t
-    consulter_lit_service = classmethod(consulter_lit_service)
-
-    def consulter_lit_etat(cls, etat):
-        t = LitModel.consulter_lit_etat(etat=etat)
+        
+    @classmethod
+    def read_by_etat(cls, etat):
+        t = LitModel.read_by_etat(etat=etat)
         if(t == []):
             raise ValueError("Aucun lit de cet état")
         else:
             return t
-    consulter_lit_etat = classmethod(consulter_lit_etat)
 
-    def compter_lits_service(cls, id_service):
-        t = LitModel.compter_lits_service(id_service=id_service)
-        if(t == []):
-            raise ValueError("Aucun li dans la base")
-        else:
-            return t
-    compter_lits_service = classmethod(compter_lits_service)
-
-    def compter_lits_etablissement(cls):
-        t = LitModel.compter_lits_etablissement()
-        if(t == []):
-            raise ValueError("Aucun li dans la base")
-        else:
-            return t
-    compter_lits_etablissement = classmethod(compter_lits_etablissement)
 
         
         
