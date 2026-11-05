@@ -141,7 +141,7 @@ class ServiceModel():
             ma_connexion.close()
 
     @classmethod
-    def nom_service_existe(cls, nom):
+    def is_nom_service_existe(cls, nom):
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()

@@ -4,7 +4,7 @@ from datetime import *
 class ServiceController():
     
     def create(cls, nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
-        t = ServiceModel.nom_service_existe()
+        t = ServiceModel.is_nom_service_existe()
         if(t == True):
             raise ValueError("Un service de ce nom existe déjà")
         if not nom_service or not categorie_service or not desc_service or not seuil_occupation or not statut_service:
