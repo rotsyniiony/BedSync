@@ -7,7 +7,12 @@ from Controllers.SejourController import *
 from Controllers.MouvementController import *
 from Controllers.IndispoController import *
 from Models.ServiceModel import *
+from Services.StatService import *
 
+
+#STATS
+t = StatService.taux_periode(datetime(2026, 10, 28), datetime(2026, 10, 29))
+print(t)
 
 ##PATIENT
 
