@@ -4,6 +4,8 @@ from Models.ServiceModel import *
 from Models.SejourModel import *
 from Models.MouvementModel import *
 from Models.IndispoModel import *
+from StatService import *
+from Models.AlerteModel import *
 from datetime import *
 
 class Detecteur():
@@ -99,6 +101,7 @@ class Detecteur():
                 for x in liste.items():
                     raise ValueError(f"Les séjours sur un même lit : sur {x['id_lit']} on a {x['sejours']} donc {x['nb_sejours']}")
 
+    #A REVOIR
     @classmethod
     def mouvements_chevauchent():
         liste = []
@@ -128,4 +131,42 @@ class Detecteur():
             elif(liste != []):
                 for x in liste.items():
                     raise ValueError(f"Les séjours qui se chevauchent: sur {x['id_lit']} de {x['id_mouvement']} par les séjours {x['en_conflits']} donc {x['nb_chevauchements']}")
+
+    @classmethod
+    def evaluation_alerte(cls):
+        #OCCUPATION ELEVEE
+        occupation = StatService.service_et_seuil_occupations(cls)
+        for x in occupation:
+            diff = x['taux_occupation'] - x['seuil_occupation']
+            active = AlerteModel.alerte_active(x['id_service'], "OCCUPATION_ELEVEE")
+
+            if(diff > 0):
+                if(active == None):
+                    a = AlerteModel(id_alerte=0, id_service=x['id_service'], type_alerte="OCCUPATION_ELEVEE", description="Le taux d'occupation dépasse le seuil défini pour le service", date_alerte=datetime.today(), regle=1)
+                    a.create()
+            elif(diff <= 0):
+                if(active != None):
+                    AlerteModel.resoudre(active['id_alerte'])
+
+
+        #SATURATION: AUCUN LIT OPERATIONNEL
+        liste = StatService.nb_lits_service()
+        for x in liste:
+            lits_operationnels = int(x['TOTAL']) - int(x['INDISPONIBLE'])
+
+            t = AlerteModel.alerte_active(x['id_service'], "SATURATION")
+            if(lits_operationnels <= 0):  
+                if(t == None):
+                    a = AlerteModel(id_alerte=0, id_service=x['id_service'], type_alerte="SATURATION", description="Aucun lit opérationnel n'est disponible dans ce service", date_alerte=datetime.today(), regle=2)
+                    a.create()
+            elif(lits_operationnels > 0):
+                if(t == None):
+                    AlerteModel.resoudre(t['id_alerte'])
+
+        #INDISPONIBILITE IMPORTANTE
+        
+                    
+
+
+
     

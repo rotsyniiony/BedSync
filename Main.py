@@ -11,8 +11,17 @@ from Services.StatService import *
 
 
 #STATS
-t = StatService.taux_periode(datetime(2026, 10, 28), datetime(2026, 10, 29))
+#t = StatService.taux_periode(datetime(2026, 10, 28), datetime(2026, 10, 29))
+t = StatService.service_seuil_eleve()
 print(t)
+print(StatService.taux_instantanee())
+
+#StatService.periode_depassement(datetime(2026, 10, 28), datetime(2026, 10, 29), 2)
+
+print(StatService.taux_periode(datetime(2026, 10, 28), datetime(2026, 10, 29)))
+print(StatService.duree_moyenne_sejour())
+print(StatService.service_et_seuil_occupations())
+print(StatService.periode_depassement(d1=None, d2=None, id_service=None))
 
 ##PATIENT
 

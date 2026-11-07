@@ -1,13 +1,14 @@
 from Models.Connexion_base import *
 
 class ServiceModel():
-    def __init__(self, id, nom, cat, des, seui, satut):
+    def __init__(self, id, nom, cat, des, seui, satut, seuil_indispo=15):
         self.id_service = id
         self.nom_service = nom
         self.categorie_service = cat
         self.desc_service = des
         self.seuil_occupation = seui
         self.statut = satut
+        self.seuil_indispo = seuil_indispo
 
 
     def get_id_service(self):
@@ -52,8 +53,8 @@ class ServiceModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            chaine_req = "INSERT INTO Services VALUES(NULL, %s, %s, %s, %s, %s)"
-            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation, self.statut)
+            chaine_req = "INSERT INTO Services VALUES(NULL, %s, %s, %s, %s, %s, %s)"
+            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation,self.self.seuil_occupation,  self.statut)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:
