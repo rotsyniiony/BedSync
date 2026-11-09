@@ -4,7 +4,7 @@ from Models.ServiceModel import *
 from Models.SejourModel import *
 from Models.MouvementModel import *
 from Models.IndispoModel import *
-from StatService import *
+from Services.StatService import *
 from Models.AlerteModel import *
 from datetime import *
 
@@ -31,7 +31,7 @@ class Detecteur():
             liste = curseur.fetchall()
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de lecture des lits occupés sans séjours: {e}")
+            raise ValueError(f"Erreur de lecture des lits occupés sans séjours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -59,7 +59,7 @@ class Detecteur():
             liste = curseur.fetchall()
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de lecture des lits occupés sans séjours: {e}")
+            raise ValueError(f"Erreur de lecture des lits occupés sans séjours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -70,7 +70,7 @@ class Detecteur():
                     raise ValueError(f"Séjour en cours sans lit occupé: {x['id_sejour']} sur lit {x['id_lit']}")
 
     @classmethod
-    def deux_sejours_meme_lit():
+    def sejours_meme_lit(cls):
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
@@ -81,6 +81,7 @@ class Detecteur():
                     COUNT(*) AS nb_sejours
                 FROM mouvement m
                 JOIN sejour s ON s.id_sejour = m.id_sejour
+                JOIN lit l ON m.id_lit = l.id_lit
                 WHERE m.date_fin_mouvement IS NULL
                     AND s.statut_sejour = %s
                 GROUP BY m.id_lit
@@ -91,12 +92,12 @@ class Detecteur():
             liste = curseur.fetchall()
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de lecture des lits occupés sans séjours: {e}")
+            raise ValueError(f"Erreur de lecture des lits occupés sans séjours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
             if(liste == []):
-                raise ValueError("Séjour sur un même lit")
+                raise ValueError("Aucun séjour sur un même lit")
             elif(liste != []):
                 for x in liste.items():
                     raise ValueError(f"Les séjours sur un même lit : sur {x['id_lit']} on a {x['sejours']} donc {x['nb_sejours']}")
@@ -135,7 +136,7 @@ class Detecteur():
     @classmethod
     def evaluation_alerte(cls):
         #OCCUPATION ELEVEE
-        occupation = StatService.service_et_seuil_occupations(cls)
+        occupation = StatService.service_et_seuil_occupations()
         for x in occupation:
             diff = x['taux_occupation'] - x['seuil_occupation']
             active = AlerteModel.alerte_active(x['id_service'], "OCCUPATION_ELEVEE")
@@ -160,12 +161,47 @@ class Detecteur():
                     a = AlerteModel(id_alerte=0, id_service=x['id_service'], type_alerte="SATURATION", description="Aucun lit opérationnel n'est disponible dans ce service", date_alerte=datetime.today(), regle=2)
                     a.create()
             elif(lits_operationnels > 0):
-                if(t == None):
+                if(t != None):
                     AlerteModel.resoudre(t['id_alerte'])
 
         #INDISPONIBILITE IMPORTANTE
-        
-                    
+        info = StatService.nb_lits_service()
+        for x in info:
+            taux = x['INDISPONIBLE'] / x['TOTAL']
+            seuil = x['seuil_indispo']
+            t = AlerteModel.alerte_active(x['id_service'], "INDISPONIBILITE IMPORTANTE")
+            if(taux > seuil):
+                if(t == None):
+                    a = AlerteModel(id_alerte=0, id_service=x['id_service'], type_alerte="INDISPONIBILITE IMPORTANTE", description="Nombre de lits indisponibles dépasse le seuil configurable", date_alerte=datetime.today(), regle=3, statut_alerte="NON_RESOLUE")
+                    a.create()
+            elif(taux < seuil):
+                if(t != None):
+                    AlerteModel.resoudre(t['id_alerte'])
+
+        #INCOHERENCE SEJOUR
+        sejours = SejourModel(0, 0, 0, 0 , "", "", "").read_all()
+        for x in sejours:
+            t = AlerteModel.alerte_active(x['id_service'], f"INCOHERENCE DE SEJOUR: {x['id_sejour']}")
+            if(x['date_sortie'] != None and x['date_admission'] > x['date_sortie']):
+                if(t == None):
+                    a = AlerteModel(id_alerte=0, id_service=x['id_service'], type_alerte=f"INCOHERENCE DE SEJOUR: {x['id_sejour']}", description="Date de sortie antérieure à la date d'admission", date_alerte=datetime.today(), regle=4, statut_alerte="NON_RESOLUE")
+                    a.create()
+            elif(x['date_sortie'] != None and x['date_admission'] < x['date_sortie']):
+                if(t != None):
+                    AlerteModel.resoudre(t['id_alerte'])
+
+        #CONFLIT D'AFFECTATION
+        conflit = Detecteur.sejours_meme_lit()
+        if(conflit == None):
+            t = AlerteModel.alerte_active(x['id_service'], f"CONFLIT D'AFFECTATION: ")#A REVOIR
+            if(t != None):
+                AlerteModel.resoudre(t['id_alerte'])
+        for x in conflit:
+            tx = AlerteModel.alerte_active(x['id_service'], f"CONFLIT D'AFFECTATION: {x['id_lit']} ")
+            if(tx == None):
+                a = AlerteModel(id_alerte=0, id_service=x['id_service'], type_alerte=f"CONFLIT D'AFFECTATION: {x['id_service']}", description="Affectation de plusierus séjours sur un même lit", date_alerte=datetime.today(), regle=5, statut_alerte="NON_RESOLUE")
+                a.create() 
+            
 
 
 

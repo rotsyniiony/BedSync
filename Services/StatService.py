@@ -37,12 +37,13 @@ class StatService():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
             req= """ 
-                SELECT l.id_service,
-                    SUM(l.etat_lit = %s) AS disponibles,
+                SELECT l.id_service, s.seuil_indispo,
+                    SUM(l.etat_lit = %s) AS DISPONIBLE,
                     SUM(l.etat_lit = %s) AS OCCUPE,
                     SUM(l.etat_lit = %s) AS INDISPONIBLE,
                     COUNT(*)             AS TOTAL
                 FROM lit l
+                JOIN services s ON l.id_service = s.id_service
                 GROUP BY l.id_service
             """
             valeurs = ("DISPONIBLE", "OCCUPE", "INDISPONIBLE")

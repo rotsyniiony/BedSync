@@ -30,6 +30,10 @@ class SejourController():
         if(t['statut'] == "INACTIF"):
             raise ValueError("Admission non accordée: service inactif")
 
+        #VERIFIER DATE SORTIE APRES DATE ADMISSION
+        if(date_sortie != None and date_sortie < datetime.today()):
+            raise ValueError("Date de sortie antérieure à la date d'admission")
+
         #VERIFIER LIT EXISTE
         if(l == None):
             raise ValueError("Admission non accordée: Ce lit n'existe pas")

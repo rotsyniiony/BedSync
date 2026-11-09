@@ -67,13 +67,12 @@ class SejourModel():
             ma_connexion.close()
         return id
             
-
     def read_all(self):
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM sejour"
+            req = "SELECT * FROM sejour s JOIN lit l ON s.id_lit = l.id_lit"
             curseur.execute(req)
             liste = curseur.fetchall()
         except Exception as e:

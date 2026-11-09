@@ -43,15 +43,16 @@ class AlerteModel():
 
     @classmethod
     def alerte_active(cls, id_service, type_alerte):
+        alerte = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
             req = """
                 SELECT id_alerte
                 FROM Alertes
                 WHERE id_service = %s
                 AND type_alerte = %s
-                AND statut = %s
+                AND statut_alerte = %s
                 LIMIT 1
             """
             valeurs = (id_service, type_alerte, "NON_RESOLUE")
@@ -59,11 +60,34 @@ class AlerteModel():
             alerte = curseur.fetchone()
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de résolution: {e}")
+            print(f"Erreur de lecture des alertes actives: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
         return alerte
+    
+    @classmethod
+    def read_active(cls):
+        alertes = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = """
+                SELECT * 
+                FROM Alertes
+                WHERE statut_alerte = %s
+            """
+            valeurs = ("NON_RESOLUE", )
+            curseur.execute(req, valeurs)
+            alertes = curseur.fetchall()
+            ma_connexion.commit()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des alertes actives: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return alertes
+
 
 
     
