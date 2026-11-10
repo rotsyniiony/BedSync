@@ -100,6 +100,8 @@ class StatService():
             ma_connexion.close()
         return liste
 
+    
+
     #Periode
     @classmethod
     def heures_indisponibilite(cls, p1, p2):

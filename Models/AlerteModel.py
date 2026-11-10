@@ -31,7 +31,7 @@ class AlerteModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
-            req = "UPDATE Alerte SET date_resolution = %s, statut_alerte = %s WHERE id_alerte = %s"
+            req = "UPDATE Alertes SET date_resolution = %s, statut_alerte = %s WHERE id_alerte = %s"
             valeurs = (datetime.today(),"RESOLUE", id)
             curseur.execute(req, valeurs)
             ma_connexion.commit()
@@ -48,7 +48,7 @@ class AlerteModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
             req = """
-                SELECT id_alerte
+                SELECT *
                 FROM Alertes
                 WHERE id_service = %s
                 AND type_alerte = %s
@@ -87,6 +87,22 @@ class AlerteModel():
             curseur.close()
             ma_connexion.close()
         return alertes
+
+    @classmethod
+    def read_all_now(cls):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = "SELECT * FROM alertes WHERE description != %s"
+            valeur = ("RESOLUE", )
+            curseur.execute(req, valeur)
+            liste = curseur.fetchone()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des lits occupes: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
 
 
 

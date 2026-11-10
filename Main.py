@@ -9,7 +9,15 @@ from Controllers.IndispoController import *
 from Models.ServiceModel import *
 from Services.StatService import *
 from Services.Detecteur import * 
+import sys
+from PyQt5.QtWidgets import QApplication
+from Views.Fenetre import *
 
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    fenetre = Fenetre()
+    fenetre.show()
+    sys.exit(app.exec_())
 
 
 t = StatService.taux_periode(datetime(2026, 10, 28), datetime(2026, 10, 29))
