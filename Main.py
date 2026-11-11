@@ -20,7 +20,9 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
 
-t = StatService.taux_periode(datetime(2026, 10, 28), datetime(2026, 10, 29))
+t = StatService.serie_occupation(datetime(2026, 10, 24), datetime(2026, 10, 28))
+print(t)
+print("pppp")
 t = StatService.service_seuil_eleve()
 print(t)
 print(StatService.taux_instantanee())

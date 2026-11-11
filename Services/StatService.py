@@ -134,7 +134,7 @@ class StatService():
         return liste
 
     @classmethod
-    def total_heures_occupation(cls, p1, p2):
+    def total_heures_occupation(cls, p1=None, p2=None):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
@@ -145,22 +145,22 @@ class StatService():
                 TIMESTAMPDIFF(SECOND, GREATEST(m.date_mouvement, %s), LEAST(COALESCE(m.date_fin_mouvement, %s), %s)
                 )))/3600,0) AS heures
                 FROM mouvement m
-                WHERE m.date_mouvement < %s
-                AND COALESCE(m.date_fin_mouvement, %s) > %s 
+                WHERE (%s IS NULL AND %s IS NULL) OR (m.date_mouvement < %s
+                AND COALESCE(m.date_fin_mouvement, %s) > %s)
             """
-            valeurs = (p1,p2, p2, p2, p2, p1)
+            valeurs = (p1,p2, p2,p1, p2, p2, p2, p1)
             curseur.execute(req, valeurs)
             liste = curseur.fetchone()
             ma_connexion.commit()
         except Exception as e:
-            raise ValueError(f"Erreur de calcul du taux par période: {e}")
+            raise ValueError(f"Erreur de calcul du total d'heures d'occupation par période: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
         return liste['heures']
 
     @classmethod
-    def total_heures_indisponibilite(cls, p1, p2):
+    def total_heures_indisponibilite(cls, p1=None, p2=None):
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
@@ -171,10 +171,10 @@ class StatService():
                 TIMESTAMPDIFF(SECOND, GREATEST(i.date_debut, %s), LEAST(COALESCE(i.date_fin, %s), %s)
                 )))/3600,0) AS heures
                 FROM indispo i
-                WHERE i.date_debut < %s
-                AND COALESCE(i.date_fin, %s) > %s 
+                WHERE (%s IS NULL AND %s IS NULL) OR (i.date_debut < %s
+                AND COALESCE(i.date_fin, %s) > %s)
             """
-            valeurs = (p1,p2, p2, p2, p2, p1)
+            valeurs = (p1,p2, p2, p1, p2, p2, p2, p1)
             curseur.execute(req, valeurs)
             liste = curseur.fetchone()
             ma_connexion.commit()
@@ -187,7 +187,7 @@ class StatService():
 
     
     @classmethod
-    def taux_periode(cls, d1, d2):
+    def taux_periode(cls, d1=None, d2=None):
         #Journees_lits_occupé / Journées_lits_opérationnels
         journee_lits_occupes = int(StatService.total_heures_occupation(d1, d2) / 24)
         journee_lits_operationnels = int((StatService.nb_lits_instant_T()['TOTAL'] * (d2 - d1).total_seconds() / 3600) - int(StatService.total_heures_indisponibilite(d1, d2)) /24)
@@ -279,7 +279,7 @@ class StatService():
                 AND (%s IS NULL OR l.id_service = %s)
                 AND (m.type_mouvement = %s)
             """
-            valeurs = (d2, d1,d2,datetime.today(),d1, id_service, id_service, "SORTIE")
+            valeurs = (d2, d1,d2,datetime.today(),d1, id_service, id_service, "ADMISSION")
             curseur.execute(req, valeurs)
             liste = curseur.fetchone()
             ma_connexion.commit()
@@ -368,6 +368,43 @@ class StatService():
             ma_connexion.close()
         return liste['total']
 
+
+    @classmethod
+    def nbr_lits_occupes_periode(cls, p1, p2):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req= """ 
+                SELECT
+                COUNT(*) AS nbr
+                FROM mouvement m
+                WHERE ((%s IS NULL AND %s IS NULL) OR (m.date_mouvement < %s
+                AND COALESCE(m.date_fin_mouvement, %s) > %s))
+                AND (m.type_mouvement = 'ADMISSION')
+            """
+            valeurs = (p1, p2, p2, p2, p1)
+            curseur.execute(req, valeurs)
+            liste = curseur.fetchone()
+            ma_connexion.commit()
+        except Exception as e:
+            raise ValueError(f"Erreur de compte des lits occupés dans cette période: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste['nbr']
+
+    @classmethod
+    def serie_occupation(cls, d1, d2, pas=timedelta(days=1)):
+        serie = []
+        debut = d1
+        while (debut < d2):
+            t = debut + pas
+            fin = min(t, d2)
+            serie.append({"date_debut": debut,"date_fin": fin, "taux_occupation": StatService.nbr_lits_occupes_periode(p1=debut, p2=fin)})
+            debut = fin
+        return serie
+    
     #A REVOIR
     @classmethod
     def service_et_seuil_occupations(cls):
@@ -410,10 +447,12 @@ class StatService():
     @classmethod
     def serie_taux(cls, d1, d2, pas=timedelta(days=1)):
         serie = []
-        while (d1 < d2):
-            t = d1 + pas
+        debut = d1
+        while (debut < d2):
+            t = debut + pas
             fin = min(t, d2)
-            serie.append((t, fin, StatService.taux_periode(d1=t, d2=fin)))
+            serie.append({"date_debut": t,"date_fin": fin, "taux_journee_lit": StatService.taux_periode(d1=t, d2=fin)})
+            debut = fin
         return serie
 
     @classmethod
