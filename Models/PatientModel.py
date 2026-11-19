@@ -47,12 +47,13 @@ class PatientModel():
         finally:
             curseur.close()
             ma_connexion.close()
+        return id_patient
 
     def read_all(self):
         liste_patients = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
             req = "SELECT * FROM patient"
             curseur.execute(req)
             liste_patients = curseur.fetchall()
@@ -73,7 +74,28 @@ class PatientModel():
             curseur.execute(req, valeur)
             liste_patients = curseur.fetchone()
         except Exception as e:
-            print(f"Erreur de lecture des patients: {e}")
+            raise ValueError(f"Erreur de lecture des patients: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste_patients
+
+    @classmethod
+    def patient_sans_sejour(cls):
+        liste_patients = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+
+            req = """SELECT p.id_patient, p.code_patient FROM patient p
+            WHERE NOT EXISTS
+            (SELECT 1 FROM mouvement m JOIN sejour s ON m.id_sejour = s.id_sejour WHERE m.date_fin_mouvement IS NULL
+            AND s.id_patient = p.id_patient)
+            """
+            curseur.execute(req)
+            liste_patients = curseur.fetchall()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des patients: {e}")
         finally:
             curseur.close()
             ma_connexion.close()

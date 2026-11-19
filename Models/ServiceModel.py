@@ -54,7 +54,7 @@ class ServiceModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor()
             chaine_req = "INSERT INTO Services VALUES(NULL, %s, %s, %s, %s, %s, %s)"
-            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation,self.self.seuil_occupation,  self.statut)
+            valeurs = (self.nom_service, self.categorie_service, self.desc_service, self.seuil_occupation,self.seuil_indispo, self.statut)
             curseur.execute(chaine_req, valeurs)
             ma_connexion.commit()
         except Exception as e:
@@ -67,7 +67,7 @@ class ServiceModel():
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
             req = "SELECT * FROM services"
             curseur.execute(req)
             liste = curseur.fetchall()
@@ -92,6 +92,22 @@ class ServiceModel():
                 print("Aucun service trouvé")
         except Exception as e:
             print(f"Erreur de lecture pour cet id: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return liste
+
+    def read_actifs(self):
+        liste = []
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
+            req = "SELECT * FROM services WHERE statut = %s"
+            valeur = ("ACTIF", )
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+        except Exception as e:
+            print(f"Erreur de lecture des services: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -147,7 +163,7 @@ class ServiceModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT id_service, nom_service FROM service WHERE nom_service = %s"
+            req = "SELECT id_service, nom_service FROM services WHERE nom_service = %s"
             valeur = (nom, )
             curseur.execute(req, valeur)
             ma_connexion.commit()

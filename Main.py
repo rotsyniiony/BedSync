@@ -11,15 +11,28 @@ from Services.StatService import *
 from Services.Detecteur import * 
 import sys
 from PyQt5.QtWidgets import QApplication
-from Views.Fenetre import *
+from Views.vue_menu_lateral import *
+
+
+from Views.vue_menu_lateral import Fenetre, STYLE
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QApplication(sys.argv)      # une seule application, créée avant tout widget
+    app.setStyleSheet(STYLE)          # le style de la vue
     fenetre = Fenetre()
     fenetre.show()
     sys.exit(app.exec_())
 
+#print(type(StatService.duree_moyenne_sejour()))
 
+"""print(PatientController.patient_sans_sejour())
+print(LitController.read())
+print(SejourModel.read_sejour(20))
+
+ServiceController.create("acac", "ipip", "ok", 12, "ACTIF")
+
+
+print(StatService.serie_occupation(datetime(2026, 10, 24), datetime(2026, 10, 28)))
 t = StatService.serie_occupation(datetime(2026, 10, 24), datetime(2026, 10, 28))
 print(t)
 print("pppp")
@@ -39,7 +52,7 @@ print(StatService.nb_lits_service())
 print("ALERTES")
 print(AlerteModel.alerte_active(2, "OCCUPATION_ELEVEE"))
 print("EVALUATION DES ALERTES")
-Detecteur.evaluation_alerte()
+Detecteur.evaluation_alerte()"""
 
 ##PATIENT
 

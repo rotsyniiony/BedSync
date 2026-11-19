@@ -61,7 +61,7 @@ class SejourModel():
             id = curseur.lastrowid
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur lors de l'ajout de sejour: {e}")
+            raise ValueError(f"Erreur lors de l'ajout de sejour: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -76,7 +76,7 @@ class SejourModel():
             curseur.execute(req)
             liste = curseur.fetchall()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -92,7 +92,7 @@ class SejourModel():
             curseur.execute(req, valeur)
             liste = curseur.fetchone()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -109,7 +109,7 @@ class SejourModel():
             curseur.execute(req, valeur)
             liste = curseur.fetchone()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -125,11 +125,30 @@ class SejourModel():
             curseur.execute(req, valeur)
             liste = curseur.fetchone()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
         return liste
+
+    @classmethod
+    def read_all_statuts(cls, statut):
+        try:
+            ma_connexion = Connexion_base.get_connexion()
+            curseur = ma_connexion.cursor(dictionary=True, buffered=True)
+            req = """SELECT 
+            id_sejour
+            FROM sejour
+            WHERE statut_sejour = %s"""
+            valeur = (statut,)
+            curseur.execute(req, valeur)
+            liste = curseur.fetchall()
+        except Exception as e:
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
+        finally:
+            curseur.close()
+            ma_connexion.close()
+        return [(f"{s['id_sejour']}", s['id_sejour']) for s in liste]   
 
     @classmethod
     def read_by_service(cls, id_sejour, service):
@@ -141,7 +160,7 @@ class SejourModel():
             curseur.execute(req, valeur)
             liste = curseur.fetchone()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -156,7 +175,7 @@ class SejourModel():
             curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de modification: {e}")
+            raise ValueError(f"Erreur de modification: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -171,7 +190,7 @@ class SejourModel():
             curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de modification: {e}")
+            raise ValueError(f"Erreur de modification: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -186,7 +205,7 @@ class SejourModel():
             curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de modification: {e}")
+            raise ValueError(f"Erreur de modification: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -199,7 +218,7 @@ class SejourModel():
             curseur.execute(req, valeur)
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de suppression: {e}")
+            raise ValueError(f"Erreur de suppression: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -212,15 +231,15 @@ class SejourModel():
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
             req = "SELECT * FROM sejour WHERE id_patient = %s AND statut_sejour = %s"
-            valeur = (id_patient, "EN COURS")
+            valeur = (id_patient, "EN_COURS")
             curseur.execute(req, valeur)
             liste = curseur.fetchone()
         except Exception as e:
-            print(f"Erreur de lecture des sejours: {e}")
+            raise ValueError(f"Erreur de lecture des sejours: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
-        return (liste != [])
+        return (liste != None)
 
     @classmethod
     def cloturer(cls, id_s):
@@ -232,7 +251,7 @@ class SejourModel():
             curseur.execute(req, valeurs)
             ma_connexion.commit()
         except Exception as e:
-            print(f"Erreur de modification: {e}")
+            raise ValueError(f"Erreur de modification: {e}")
         finally:
             curseur.close()
             ma_connexion.close()

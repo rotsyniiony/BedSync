@@ -4,12 +4,16 @@ from datetime import *
 class PatientController():
     @classmethod
     def create(cls):
-        PatientModel.create()       
+        return PatientModel.create()       
 
     @classmethod
     def read_all(cls):
         patient = PatientModel(0, 0, "")
         return patient.read_all()
+
+    @classmethod
+    def patient_sans_sejour(cls):
+        return PatientModel.patient_sans_sejour()
     
     @classmethod
     def update(cls,id_patient,code_patient, date_fiche):

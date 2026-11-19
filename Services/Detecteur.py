@@ -99,7 +99,7 @@ class Detecteur():
             if(liste == []):
                 raise ValueError("Aucun séjour sur un même lit")
             elif(liste != []):
-                for x in liste.items():
+                for x in liste:
                     raise ValueError(f"Les séjours sur un même lit : sur {x['id_lit']} on a {x['sejours']} donc {x['nb_sejours']}")
 
     #A REVOIR

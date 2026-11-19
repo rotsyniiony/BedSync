@@ -3,8 +3,8 @@ from datetime import *
 
 class ServiceController():
     
-    def create(cls, nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
-        t = ServiceModel.is_nom_service_existe()
+    def create(cls, nom_service, categorie_service, desc_service, seuil_occupation,statut_service, seuil_indispo=15):
+        t = ServiceModel.is_nom_service_existe(nom_service)
         if(t == True):
             raise ValueError("Un service de ce nom existe déjà")
         if not nom_service or not categorie_service or not desc_service or not seuil_occupation or not statut_service:
@@ -26,14 +26,19 @@ class ServiceController():
             raise ValueError("Mentionner la catégorie")
 
 
-        patient = ServiceModel(0, nom_service, categorie_service, desc_service, seuil_occupation, statut_service)        
+        patient = ServiceModel(0, nom_service, categorie_service, desc_service, seuil_occupation, statut_service, seuil_indispo)        
         patient.create()
     create = classmethod(create)
 
-    def read(cls):
+    def read_all(cls):
         patient = ServiceModel(0, "", "", "", 0, "")
         return patient.read_all()
-    read = classmethod(read)
+    read = classmethod(read_all)
+
+    def read_actifs(cls):
+        patient = ServiceModel(0, "", "", "", 0, "")
+        return patient.read_actifs()
+    read_actifs = classmethod(read_actifs)
 
     def update(cls,id_service , nom_service, categorie_service, desc_service, seuil_occupation, statut_service):
         if not nom_service or not categorie_service:

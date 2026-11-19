@@ -54,7 +54,7 @@ class LitModel():
             curseur.execute(chaine_req, valeurs)
 
 
-            t = ServiceModel.get_service(self.id_service)
+
             id_lit = curseur.lastrowid
             code_lit = f"LIT-{id_lit:04d}"
             req = "UPDATE lit SET code_lit = %s WHERE id_lit = %s"
@@ -86,12 +86,12 @@ class LitModel():
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
-            req = "SELECT * FROM lit"
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
+            req = "SELECT * FROM lit l JOIN services s ON l.id_service = s.id_service "
             curseur.execute(req)
             liste = curseur.fetchall()
         except Exception as e:
-            print(f"Erreur de lecture des lits: {e}")
+            raise ValueError(f"Erreur de lecture des lits: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
@@ -134,7 +134,7 @@ class LitModel():
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
-            req = "SELECT * FROM lit WHERE etat_lit = %s"
+            req = "SELECT * FROM lit l JOIN services s ON l.id_service = s.id_service WHERE etat_lit = %s"
             valeur = (etat,)
             curseur.execute(req, valeur)
             liste = curseur.fetchall()

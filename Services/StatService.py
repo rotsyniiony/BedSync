@@ -65,7 +65,7 @@ class StatService():
         lits_operationnels = int(liste['TOTAL']) - int(liste['INDISPONIBLE'])
         if(lits_operationnels <= 0):
             raise ZeroDivisionError("NON CALCULABLE")
-        return round(lits_occupes / lits_operationnels * 100 ,2)
+        return round((lits_occupes / lits_operationnels)* 100 ,2)
 
     @classmethod
     def nb_lits_instant_T(cls):
@@ -368,42 +368,45 @@ class StatService():
             ma_connexion.close()
         return liste['total']
 
-
+    #A REVOIR
     @classmethod
-    def nbr_lits_occupes_periode(cls, p1, p2):
+    def serie_occupation(cls, p1, p2):
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
             curseur = ma_connexion.cursor(dictionary=True, buffered=True)
             req= """ 
+                WITH RECURSIVE jours AS (
+                SELECT DATE(%s) AS jour
+                UNION ALL
+                SELECT jour + INTERVAL 1 DAY
+                FROM jours
+                WHERE jour + INTERVAL 1 DAY < DATE(%s)
+                )
                 SELECT
-                COUNT(*) AS nbr
-                FROM mouvement m
-                WHERE ((%s IS NULL AND %s IS NULL) OR (m.date_mouvement < %s
-                AND COALESCE(m.date_fin_mouvement, %s) > %s))
-                AND (m.type_mouvement = 'ADMISSION')
+                    j.jour                      AS date_debut,
+                    j.jour + INTERVAL 1 DAY     AS date_fin,
+                    COUNT(m.id_mouvement)       AS nbr_lits_occupes
+                FROM jours j
+                LEFT JOIN mouvement m
+                    ON m.type_mouvement = 'ADMISSION'
+                    AND m.date_mouvement < j.jour + INTERVAL 1 DAY
+                    AND COALESCE(m.date_fin_mouvement, j.jour + INTERVAL 1 DAY) > j.jour
+                GROUP BY j.jour
+                ORDER BY j.jour
             """
-            valeurs = (p1, p2, p2, p2, p1)
+            valeurs = (p1,p2)
             curseur.execute(req, valeurs)
-            liste = curseur.fetchone()
+            liste = curseur.fetchall()
             ma_connexion.commit()
         except Exception as e:
             raise ValueError(f"Erreur de compte des lits occupés dans cette période: {e}")
         finally:
             curseur.close()
             ma_connexion.close()
-        return liste['nbr']
+        return liste
 
-    @classmethod
-    def serie_occupation(cls, d1, d2, pas=timedelta(days=1)):
-        serie = []
-        debut = d1
-        while (debut < d2):
-            t = debut + pas
-            fin = min(t, d2)
-            serie.append({"date_debut": debut,"date_fin": fin, "taux_occupation": StatService.nbr_lits_occupes_periode(p1=debut, p2=fin)})
-            debut = fin
-        return serie
+   
     
     #A REVOIR
     @classmethod
@@ -416,12 +419,12 @@ class StatService():
                 SELECT
                     s.id_service,
                     s.nom_service,
-                    SUM(l.etat_lit = 'OCCUPE')      AS OCCUPE,
-                    SUM(l.etat_lit = 'DISPONIBLE')  AS DISPONIBLE,
-                    SUM(l.etat_lit = 'INDISPONIBLE') AS INDISPONIBLE,
+                    COALESCE(SUM(l.etat_lit = 'OCCUPE'),0)      AS OCCUPE,
+                    COALESCE(SUM(l.etat_lit = 'DISPONIBLE'), 0)  AS DISPONIBLE,
+                    COALESCE(SUM(l.etat_lit = 'INDISPONIBLE'), 0) AS INDISPONIBLE,
                     s.seuil_occupation,
-                    ROUND(100 * SUM(l.etat_lit = 'OCCUPE')
-                    / SUM(l.etat_lit IN ('OCCUPE', 'DISPONIBLE')), 1) AS taux_occupation
+                    COALESCE(ROUND(100 * SUM(l.etat_lit = 'OCCUPE')
+                    / SUM(l.etat_lit IN ('OCCUPE', 'DISPONIBLE')), 1), 0) AS taux_occupation
                 FROM services s
                 JOIN lit l ON l.id_service = s.id_service
                 WHERE s.statut = 'ACTIF'
@@ -466,7 +469,7 @@ class StatService():
                     GREATEST(0, 
                     TIMESTAMPDIFF(SECOND, i.date_debut, COALESCE(i.date_fin, %s))
                     )/3600
-                )) AS total
+                ), 0) AS total
                 FROM indispo i
                 JOIN lit l ON i.id_lit = l.id_lit
                 WHERE
@@ -482,7 +485,7 @@ class StatService():
         finally:
             curseur.close()
             ma_connexion.close()
-        return liste['total']
+        return liste['total'] if liste != None else 0
 
     @classmethod
     def periode_depassement(cls, d1=None, d2=None, id_service=None):

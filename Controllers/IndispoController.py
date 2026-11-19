@@ -9,8 +9,8 @@ class IndispoController():
         l = LitModel.read_lit(id_lit=id_lit)
         if(l == None):
             raise ValueError("Aucun lit de ce type")
-        t = LitModel.lit_occupe(id_lit)
-        if(t != None):
+        t = LitModel.is_lit_occupe(id_lit)
+        if(t != True):
             raise ValueError("Le lit est occupé")
         if not id_lit or not motif:
             raise ValueError("Le nom du lit est le motif concernés sont obligatoires")

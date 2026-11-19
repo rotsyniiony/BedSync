@@ -59,7 +59,7 @@ class IndispoModel():
         liste = []
         try:
             ma_connexion = Connexion_base.get_connexion()
-            curseur = ma_connexion.cursor()
+            curseur = ma_connexion.cursor(buffered=True, dictionary=True)
             req = "SELECT * FROM indispo"
             curseur.execute(req)
             liste = curseur.fetchall()

@@ -7,7 +7,8 @@ from Models.IndispoModel import *
 from datetime import *
 
 class SejourController():
-    
+
+    @classmethod
     def create(cls, id_patient,id_service,id_lit,date_sortie=None):
         p = PatientModel.is_patient_existe(id_patient=id_patient)
         c = SejourModel.is_patient_encours(id_patient=id_patient)
@@ -48,8 +49,18 @@ class SejourController():
 
     @classmethod
     def read_all(cls):
-        patient = SejourModel(0, 0, 0, 0 , "")
+        patient = SejourModel(0, 0, 0, 0 , "", "")
         return patient.read_all()
+
+    @classmethod
+    def read_by_statut(cls):
+        patient = SejourModel(0, 0, 0, 0 , "", "")
+        return patient.read_by_statut()
+
+    @classmethod
+    def read_all_statuts(cls, statut):
+        patient = SejourModel(0, 0, 0, 0 , "", "")
+        return patient.read_all_statuts(statut=statut)
 
     @classmethod
     def cloturer(cls, id_s):
@@ -85,12 +96,12 @@ class SejourController():
         nouveau_lit = LitModel.read_lit(id_lit=id_lit)
         sejour = SejourModel.read_sejour(id_sejour=id_sejour)
         service = ServiceModel.read_service(id_service=nouveau_lit['id_service'])
-        dernier_mouvement = MouvementModel.read_mouvements(id_sejour= id_sejour)
+        dernier_mouvement = MouvementModel.read_last_mouvement(id_sejour= id_sejour)
 
         if(nouveau_lit['etat_lit'] != "DISPONIBLE"):
             raise ValueError(f"Lit {nouveau_lit['etat_lit']}")
 
-        if(sejour['statut_sejour'] != "EN COURS"):
+        if(sejour['statut_sejour'] != "EN_COURS"):
             raise ValueError(f"Séjour est {sejour['statut_sejour']}")
         if(id_lit == sejour['id_lit']):
             raise ValueError("C'est le même lit")
@@ -118,7 +129,7 @@ class SejourController():
         MouvementModel.cloturer(dernier_mouvement['id_mouvement'])
 
         if(service['id_service'] != sejour['id_service']):
-            SejourModel.update_service(id_service=service['id_service'])
+            SejourModel.update_service(id_service=service['id_service'], id_sejour=id_sejour)
 
     def update(cls, id_sejour, id_patient,id_service,id_lit, date_admission, date_sortie):
         if not id_patient or not id_lit:
